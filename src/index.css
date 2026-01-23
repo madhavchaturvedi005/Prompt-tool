@@ -7,56 +7,57 @@
 
 @layer base {
   :root {
-    /* Elegant dark palette */
-    --background: 0 0% 3%;
-    --foreground: 0 0% 98%;
+    /* Elegant cream/white palette */
+    --background: 40 30% 96%;
+    --foreground: 30 10% 15%;
 
-    --card: 0 0% 6%;
-    --card-foreground: 0 0% 98%;
+    --card: 40 25% 98%;
+    --card-foreground: 30 10% 15%;
 
-    --popover: 0 0% 6%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 40 25% 98%;
+    --popover-foreground: 30 10% 15%;
 
     /* Rich gold primary */
-    --primary: 43 74% 49%;
-    --primary-foreground: 0 0% 3%;
+    --primary: 38 70% 45%;
+    --primary-foreground: 40 30% 98%;
 
     /* Warm gold secondary */
-    --secondary: 38 50% 35%;
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 40 20% 90%;
+    --secondary-foreground: 30 10% 15%;
 
-    --muted: 0 0% 10%;
-    --muted-foreground: 0 0% 55%;
+    --muted: 40 15% 92%;
+    --muted-foreground: 30 10% 40%;
 
-    --accent: 43 74% 49%;
-    --accent-foreground: 0 0% 3%;
+    --accent: 38 70% 45%;
+    --accent-foreground: 40 30% 98%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 0 0% 14%;
-    --input: 0 0% 14%;
-    --ring: 43 74% 49%;
+    --border: 40 20% 85%;
+    --input: 40 20% 85%;
+    --ring: 38 70% 45%;
 
     --radius: 0.5rem;
 
     /* Gold color scale */
-    --gold: 43 74% 49%;
-    --gold-light: 43 80% 65%;
-    --gold-dark: 38 60% 35%;
-    --gold-muted: 43 30% 25%;
+    --gold: 38 70% 45%;
+    --gold-light: 43 75% 55%;
+    --gold-dark: 35 65% 35%;
+    --gold-muted: 40 30% 75%;
     
-    /* Cream accent */
-    --cream: 40 30% 92%;
+    /* Cream colors */
+    --cream: 40 30% 96%;
+    --cream-dark: 40 20% 90%;
 
-    --sidebar-background: 0 0% 3%;
-    --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 43 74% 49%;
-    --sidebar-primary-foreground: 0 0% 3%;
-    --sidebar-accent: 0 0% 10%;
-    --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 0 0% 14%;
-    --sidebar-ring: 43 74% 49%;
+    --sidebar-background: 40 25% 98%;
+    --sidebar-foreground: 30 10% 15%;
+    --sidebar-primary: 38 70% 45%;
+    --sidebar-primary-foreground: 40 30% 98%;
+    --sidebar-accent: 40 20% 92%;
+    --sidebar-accent-foreground: 30 10% 15%;
+    --sidebar-border: 40 20% 85%;
+    --sidebar-ring: 38 70% 45%;
   }
 }
 
@@ -113,11 +114,11 @@
 
   /* Classic glass effect */
   .glass {
-    @apply bg-card/80 backdrop-blur-md border border-border;
+    @apply bg-card/90 backdrop-blur-md border border-border shadow-sm;
   }
 
   .glass-gold {
-    @apply bg-card/80 backdrop-blur-md border border-gold-muted/30;
+    @apply bg-card/90 backdrop-blur-md border border-gold/20 shadow-sm;
   }
 
   /* Subtle grid pattern */
