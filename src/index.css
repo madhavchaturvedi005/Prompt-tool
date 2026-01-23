@@ -2,63 +2,40 @@
 @tailwind components;
 @tailwind utilities;
 
-/* PromptLab - Ocean Blue Premium Theme */
+/* PromptLab - Monochrome Premium Theme */
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
 
 @layer base {
   :root {
-    /* Deep ocean palette */
-    --background: 210 40% 98%;
-    --foreground: 210 50% 10%;
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+    --card: 0 0% 5%;
+    --card-foreground: 0 0% 100%;
+    --popover: 0 0% 5%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 0 0% 100%;
+    --primary-foreground: 0 0% 0%;
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 65%;
+    --accent: 0 0% 20%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 0 0% 100%;
+    --radius: 0.75rem;
 
-    --card: 210 50% 99%;
-    --card-foreground: 210 50% 10%;
-
-    --popover: 210 50% 99%;
-    --popover-foreground: 210 50% 10%;
-
-    /* Ocean blue primary */
-    --primary: 205 85% 45%;
-    --primary-foreground: 210 50% 98%;
-
-    /* Soft blue secondary */
-    --secondary: 210 30% 92%;
-    --secondary-foreground: 210 50% 15%;
-
-    --muted: 210 20% 94%;
-    --muted-foreground: 210 20% 40%;
-
-    --accent: 195 90% 40%;
-    --accent-foreground: 210 50% 98%;
-
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 0 0% 98%;
-
-    --border: 210 25% 88%;
-    --input: 210 25% 88%;
-    --ring: 205 85% 45%;
-
-    --radius: 0.5rem;
-
-    /* Ocean blue scale */
-    --ocean: 205 85% 45%;
-    --ocean-light: 195 80% 55%;
-    --ocean-dark: 210 90% 30%;
-    --ocean-deep: 215 95% 20%;
-    --ocean-muted: 210 40% 70%;
-    
-    /* Seafoam/white colors */
-    --seafoam: 180 30% 95%;
-    --seafoam-dark: 195 25% 90%;
-
-    --sidebar-background: 210 50% 99%;
-    --sidebar-foreground: 210 50% 10%;
-    --sidebar-primary: 205 85% 45%;
-    --sidebar-primary-foreground: 210 50% 98%;
-    --sidebar-accent: 210 30% 94%;
-    --sidebar-accent-foreground: 210 50% 15%;
-    --sidebar-border: 210 25% 88%;
-    --sidebar-ring: 205 85% 45%;
+    --sidebar-background: 0 0% 5%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 0 0% 100%;
+    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-accent: 0 0% 15%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 0 0% 20%;
+    --sidebar-ring: 0 0% 100%;
   }
 }
 
@@ -86,40 +63,29 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-ocean-muted rounded-full;
+    @apply bg-muted rounded-full;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--ocean));
+    background: hsl(var(--primary));
   }
 }
 
 @layer utilities {
-  /* Ocean gradient text */
+  /* Gradient text */
   .text-gradient {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, hsl(var(--ocean-light)), hsl(var(--ocean)), hsl(var(--ocean-dark)));
+    background-image: linear-gradient(135deg, hsl(var(--foreground)), hsl(var(--muted-foreground)));
   }
 
-  .text-gradient-animated {
-    @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, hsl(var(--ocean-light)), hsl(var(--ocean)), hsl(var(--ocean-dark)), hsl(var(--ocean-light)));
-    background-size: 300% 300%;
-    animation: gradient-shift 8s ease infinite;
-  }
-
-  /* Ocean glow */
-  .glow-ocean {
-    box-shadow: 0 0 30px hsl(var(--ocean) / 0.2), 0 0 60px hsl(var(--ocean) / 0.1);
+  /* Glow effect */
+  .glow {
+    box-shadow: 0 0 30px hsl(var(--primary) / 0.15), 0 0 60px hsl(var(--primary) / 0.1);
   }
 
   /* Glass effect */
   .glass {
-    @apply bg-white/80 backdrop-blur-xl border border-white/40 shadow-lg;
-  }
-
-  .glass-ocean {
-    @apply bg-white/70 backdrop-blur-xl border border-ocean/20 shadow-lg;
+    @apply bg-white/5 backdrop-blur-xl border border-white/10 shadow-lg;
   }
 
   /* Subtle grid pattern */
@@ -130,15 +96,10 @@
     background-size: 80px 80px;
   }
 
-  /* Ocean divider */
-  .divider-ocean {
+  /* Divider */
+  .divider {
     @apply h-px w-full;
-    background: linear-gradient(90deg, transparent, hsl(var(--ocean) / 0.5), transparent);
-  }
-
-  /* Ocean border accent */
-  .border-ocean-gradient {
-    border-image: linear-gradient(135deg, hsl(var(--ocean-dark)), hsl(var(--ocean)), hsl(var(--ocean-dark))) 1;
+    background: linear-gradient(90deg, transparent, hsl(var(--primary) / 0.3), transparent);
   }
 }
 
@@ -163,21 +124,6 @@
   }
 }
 
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
-}
-
 .animate-fade-in-up {
   animation: fade-in-up 0.6s ease-out forwards;
-}
-
-.animate-shimmer {
-  background: linear-gradient(90deg, transparent, hsl(var(--gold) / 0.1), transparent);
-  background-size: 200% 100%;
-  animation: shimmer 2s infinite;
 }

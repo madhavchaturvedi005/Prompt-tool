@@ -1,76 +1,129 @@
-import { ArrowRight, Waves } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import ShaderBackground from "./ShaderBackground";
+import { BackgroundPaths } from "./BackgroundPaths";
+import { motion } from "framer-motion";
 
 export function HeroSection() {
+  const title = "Master the Craft of Prompt Engineering";
+  const words = title.split(" ");
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* WebGL Shader Background */}
-      <div className="absolute inset-0 z-0">
-        <ShaderBackground />
-      </div>
+      {/* Animated Paths Background */}
+      <BackgroundPaths />
 
       {/* Content */}
       <div className="container mx-auto px-4 relative z-20">
         <div className="max-w-4xl mx-auto text-center">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-ocean-deep/80 backdrop-blur-md border border-ocean/30 mb-8 shadow-lg">
-            <Waves className="w-4 h-4 text-cyan-300" />
-            <span className="text-sm font-medium text-white">
-              The Art of AI Communication
-            </span>
-          </div>
-
-          {/* Main Heading */}
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading font-bold leading-tight mb-6 tracking-tight text-ocean-deep drop-shadow-sm">
-            Master the Craft of
-            <br />
-            <span className="bg-gradient-to-r from-ocean-dark via-ocean to-ocean-light bg-clip-text text-transparent">
-              Prompt Engineering
-            </span>
-          </h1>
+          {/* Main Heading with letter animation */}
+          <motion.h1 
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading font-bold leading-tight mb-8 tracking-tight"
+          >
+            {words.map((word, wordIndex) => (
+              <motion.span
+                key={wordIndex}
+                className="inline-block mr-4 last:mr-0"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  delay: wordIndex * 0.1,
+                  duration: 0.5,
+                  ease: "easeOut",
+                }}
+              >
+                {word.split("").map((letter, letterIndex) => (
+                  <motion.span
+                    key={letterIndex}
+                    className="inline-block text-foreground"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      delay: wordIndex * 0.1 + letterIndex * 0.03,
+                      duration: 0.4,
+                      ease: "easeOut",
+                    }}
+                    whileHover={{
+                      scale: 1.1,
+                      transition: { duration: 0.2 },
+                    }}
+                  >
+                    {letter}
+                  </motion.span>
+                ))}
+              </motion.span>
+            ))}
+          </motion.h1>
 
           {/* Divider */}
-          <div className="h-px w-48 mx-auto mb-6 bg-gradient-to-r from-transparent via-ocean/60 to-transparent" />
+          <motion.div 
+            className="h-px w-48 mx-auto mb-8 bg-gradient-to-r from-transparent via-foreground/30 to-transparent"
+            initial={{ scaleX: 0, opacity: 0 }}
+            animate={{ scaleX: 1, opacity: 1 }}
+            transition={{ delay: 0.8, duration: 0.6 }}
+          />
 
           {/* Subheading */}
-          <p className="text-lg md:text-xl text-ocean-dark/80 max-w-2xl mx-auto mb-10 leading-relaxed">
+          <motion.p 
+            className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1, duration: 0.6 }}
+          >
             Unlock the full potential of AI with expertly curated lessons, 
             hands-on practice, and real-world challenges designed for those 
             who seek excellence.
-          </p>
+          </motion.p>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
-            <Button variant="ocean" size="xl" className="group shadow-xl">
+          <motion.div 
+            className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.2, duration: 0.6 }}
+          >
+            <Button 
+              size="lg" 
+              className="group px-8 py-6 text-base bg-primary text-primary-foreground hover:bg-primary/90 rounded-full"
+            >
               Begin Your Journey
-              <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+              <ArrowRight className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" />
             </Button>
-            <Button variant="outline" size="xl" className="border-ocean text-ocean-dark hover:bg-ocean/10 bg-white/60 backdrop-blur-sm">
+            <Button 
+              variant="outline" 
+              size="lg" 
+              className="px-8 py-6 text-base border-border text-foreground hover:bg-accent rounded-full"
+            >
               Explore Curriculum
             </Button>
-          </div>
+          </motion.div>
 
           {/* Stats */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl mx-auto">
+          <motion.div 
+            className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl mx-auto"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.4, duration: 0.6 }}
+          >
             {[
               { value: "50+", label: "Expert Modules" },
               { value: "200+", label: "Practice Prompts" },
               { value: "10K+", label: "Certified Learners" },
             ].map((stat, index) => (
-              <div
+              <motion.div
                 key={index}
-                className="flex flex-col items-center gap-2 p-6 rounded-2xl bg-white/70 backdrop-blur-md border border-ocean/20 shadow-lg transition-all duration-300 hover:bg-white/90 hover:scale-105"
+                className="flex flex-col items-center gap-2 p-6 rounded-2xl glass transition-all duration-300 hover:bg-white/10"
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.2 }}
               >
-                <span className="text-3xl md:text-4xl font-heading font-bold text-ocean-dark">
+                <span className="text-3xl md:text-4xl font-heading font-bold text-foreground">
                   {stat.value}
                 </span>
-                <span className="text-sm text-ocean-dark/70">
+                <span className="text-sm text-muted-foreground">
                   {stat.label}
                 </span>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </div>
 

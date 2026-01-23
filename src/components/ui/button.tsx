@@ -15,10 +15,6 @@ const buttonVariants = cva(
         secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-muted hover:text-foreground",
         link: "text-primary underline-offset-4 hover:underline",
-        // Ocean blue variants
-        ocean: "bg-gradient-to-r from-ocean-dark via-ocean to-ocean-light text-white font-semibold border border-ocean/30 hover:shadow-lg hover:shadow-ocean/20 hover:scale-[1.02] active:scale-100",
-        "ocean-outline": "border-2 border-white/30 bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 hover:border-white/50",
-        elegant: "bg-card border border-border text-foreground hover:border-ocean/50 hover:text-ocean",
       },
       size: {
         default: "h-10 px-5 py-2 rounded-md",

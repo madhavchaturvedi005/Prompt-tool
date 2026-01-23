@@ -76,7 +76,7 @@ const courses = [
 
 const levelColors: Record<string, string> = {
   Beginner: "text-emerald-400 border-emerald-400/30",
-  Intermediate: "text-ocean border-ocean/30",
+  Intermediate: "text-foreground border-foreground/30",
   Advanced: "text-rose-400 border-rose-400/30",
   "All Levels": "text-sky-400 border-sky-400/30",
 };
@@ -90,13 +90,13 @@ const Learn = () => {
         <div className="container mx-auto px-4">
           {/* Header */}
           <div className="text-center mb-12">
-            <span className="text-ocean text-sm font-medium tracking-widest uppercase mb-4 block">
+            <span className="text-muted-foreground text-sm font-medium tracking-widest uppercase mb-4 block">
               Curriculum
             </span>
-            <h1 className="text-4xl md:text-5xl font-serif font-semibold mb-4">
-              Learning <span className="text-gradient">Paths</span>
+            <h1 className="text-4xl md:text-5xl font-heading font-semibold mb-4">
+              Learning <span className="text-foreground">Paths</span>
             </h1>
-            <div className="divider-ocean max-w-xs mx-auto mb-6" />
+            <div className="divider max-w-xs mx-auto mb-6" />
             <p className="text-muted-foreground max-w-2xl mx-auto">
               Structured courses designed to take you from beginner to expert in prompt engineering.
             </p>
@@ -109,7 +109,7 @@ const Learn = () => {
                 key={course.id}
                 className={cn(
                   "group relative rounded-2xl glass border overflow-hidden transition-all duration-500",
-                  "hover:border-ocean/50 hover:shadow-lg hover:shadow-ocean/10",
+                  "hover:border-foreground/50 hover:shadow-lg hover:shadow-foreground/5",
                   course.locked && "opacity-60"
                 )}
               >
@@ -134,7 +134,7 @@ const Learn = () => {
                           <span className="text-green-400">Complete</span>
                         </>
                       ) : (
-                        <span className="text-ocean">{course.progress}%</span>
+                        <span className="text-foreground">{course.progress}%</span>
                       )}
                     </div>
                   )}
@@ -148,7 +148,7 @@ const Learn = () => {
                     </span>
                   </div>
                   
-                  <h3 className="text-lg font-semibold mb-2 group-hover:text-ocean transition-colors">
+                  <h3 className="text-lg font-semibold mb-2 group-hover:text-foreground transition-colors">
                     {course.title}
                   </h3>
                   <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
@@ -175,14 +175,14 @@ const Learn = () => {
                   {course.progress > 0 && (
                     <div className="h-1.5 bg-muted rounded-full mb-4 overflow-hidden">
                       <div
-                        className="h-full bg-gradient-to-r from-ocean to-ocean-light rounded-full transition-all"
+                        className="h-full bg-foreground rounded-full transition-all"
                         style={{ width: `${course.progress}%` }}
                       />
                     </div>
                   )}
 
                   <Button
-                    variant={course.locked ? "outline" : "ocean"}
+                    variant={course.locked ? "outline" : "default"}
                     className="w-full"
                     disabled={course.locked}
                   >

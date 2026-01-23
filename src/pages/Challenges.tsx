@@ -78,7 +78,7 @@ const difficultyColors: Record<string, string> = {
   Easy: "text-green-400 bg-green-400/10",
   Medium: "text-yellow-400 bg-yellow-400/10",
   Hard: "text-red-400 bg-red-400/10",
-  Expert: "text-ocean-light bg-ocean-light/10",
+  Expert: "text-foreground bg-foreground/10",
 };
 
 const Challenges = () => {
@@ -91,7 +91,7 @@ const Challenges = () => {
           {/* Header */}
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              Weekly <span className="text-gradient">Challenges</span>
+              Weekly <span className="text-foreground">Challenges</span>
             </h1>
             <p className="text-muted-foreground max-w-2xl mx-auto">
               Test your skills, compete with others, and climb the leaderboard.
@@ -107,8 +107,8 @@ const Challenges = () => {
               { icon: Medal, label: "Badges", value: "12" },
             ].map((stat, i) => (
               <div key={i} className="glass rounded-xl border p-4 text-center">
-                <stat.icon className="w-6 h-6 text-ocean mx-auto mb-2" />
-                <p className="text-2xl font-bold text-gradient">{stat.value}</p>
+                <stat.icon className="w-6 h-6 text-foreground mx-auto mb-2" />
+                <p className="text-2xl font-bold text-foreground">{stat.value}</p>
                 <p className="text-xs text-muted-foreground">{stat.label}</p>
               </div>
             ))}
@@ -121,25 +121,25 @@ const Challenges = () => {
                 key={challenge.id}
                 className={cn(
                   "glass rounded-2xl border p-6 transition-all duration-300",
-                  challenge.featured && "border-ocean-light/50 shadow-lg shadow-ocean-light/10",
+                  challenge.featured && "border-foreground/50 shadow-lg shadow-foreground/5",
                   challenge.status === "locked" && "opacity-50",
-                  challenge.status !== "locked" && "hover:border-ocean/50"
+                  challenge.status !== "locked" && "hover:border-foreground/50"
                 )}
               >
                 {challenge.featured && (
                   <div className="flex items-center gap-2 mb-3">
-                    <Flame className="w-4 h-4 text-ocean-light" />
-                    <span className="text-xs font-medium text-ocean-light">Featured Challenge</span>
+                    <Flame className="w-4 h-4 text-foreground" />
+                    <span className="text-xs font-medium text-foreground">Featured Challenge</span>
                   </div>
                 )}
 
                 <div className="flex flex-col md:flex-row md:items-center gap-4">
                   {/* Challenge Number */}
-                  <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-ocean/20 to-ocean-light/20 flex items-center justify-center">
+                  <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-accent flex items-center justify-center">
                     {challenge.status === "completed" ? (
                       <Trophy className="w-6 h-6 text-yellow-400" />
                     ) : (
-                      <Target className="w-6 h-6 text-ocean" />
+                      <Target className="w-6 h-6 text-foreground" />
                     )}
                   </div>
 
@@ -176,7 +176,7 @@ const Challenges = () => {
                         Score: {challenge.score}/100
                       </div>
                     ) : challenge.status === "in-progress" ? (
-                      <Button variant="ocean" size="sm">
+                      <Button variant="default" size="sm">
                         Continue
                       </Button>
                     ) : challenge.status === "locked" ? (
@@ -184,7 +184,7 @@ const Challenges = () => {
                         Locked
                       </Button>
                     ) : (
-                      <Button variant="outline" size="sm" className="border-ocean text-ocean hover:bg-ocean/10">
+                      <Button variant="outline" size="sm">
                         Start
                       </Button>
                     )}
