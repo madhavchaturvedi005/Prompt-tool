@@ -78,7 +78,7 @@ const difficultyColors: Record<string, string> = {
   Easy: "text-green-400 bg-green-400/10",
   Medium: "text-yellow-400 bg-yellow-400/10",
   Hard: "text-red-400 bg-red-400/10",
-  Expert: "text-neon-purple bg-neon-purple/10",
+  Expert: "text-ocean-light bg-ocean-light/10",
 };
 
 const Challenges = () => {
@@ -107,7 +107,7 @@ const Challenges = () => {
               { icon: Medal, label: "Badges", value: "12" },
             ].map((stat, i) => (
               <div key={i} className="glass rounded-xl border p-4 text-center">
-                <stat.icon className="w-6 h-6 text-neon-blue mx-auto mb-2" />
+                <stat.icon className="w-6 h-6 text-ocean mx-auto mb-2" />
                 <p className="text-2xl font-bold text-gradient">{stat.value}</p>
                 <p className="text-xs text-muted-foreground">{stat.label}</p>
               </div>
@@ -121,25 +121,25 @@ const Challenges = () => {
                 key={challenge.id}
                 className={cn(
                   "glass rounded-2xl border p-6 transition-all duration-300",
-                  challenge.featured && "border-neon-purple/50 shadow-lg shadow-neon-purple/10",
+                  challenge.featured && "border-ocean-light/50 shadow-lg shadow-ocean-light/10",
                   challenge.status === "locked" && "opacity-50",
-                  challenge.status !== "locked" && "hover:border-neon-blue/50"
+                  challenge.status !== "locked" && "hover:border-ocean/50"
                 )}
               >
                 {challenge.featured && (
                   <div className="flex items-center gap-2 mb-3">
-                    <Flame className="w-4 h-4 text-neon-purple" />
-                    <span className="text-xs font-medium text-neon-purple">Featured Challenge</span>
+                    <Flame className="w-4 h-4 text-ocean-light" />
+                    <span className="text-xs font-medium text-ocean-light">Featured Challenge</span>
                   </div>
                 )}
 
                 <div className="flex flex-col md:flex-row md:items-center gap-4">
                   {/* Challenge Number */}
-                  <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-neon-blue/20 to-neon-purple/20 flex items-center justify-center">
+                  <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-ocean/20 to-ocean-light/20 flex items-center justify-center">
                     {challenge.status === "completed" ? (
                       <Trophy className="w-6 h-6 text-yellow-400" />
                     ) : (
-                      <Target className="w-6 h-6 text-neon-blue" />
+                      <Target className="w-6 h-6 text-ocean" />
                     )}
                   </div>
 
@@ -176,7 +176,7 @@ const Challenges = () => {
                         Score: {challenge.score}/100
                       </div>
                     ) : challenge.status === "in-progress" ? (
-                      <Button variant="gold" size="sm">
+                      <Button variant="ocean" size="sm">
                         Continue
                       </Button>
                     ) : challenge.status === "locked" ? (
@@ -184,7 +184,7 @@ const Challenges = () => {
                         Locked
                       </Button>
                     ) : (
-                      <Button variant="gold-outline" size="sm">
+                      <Button variant="outline" size="sm" className="border-ocean text-ocean hover:bg-ocean/10">
                         Start
                       </Button>
                     )}

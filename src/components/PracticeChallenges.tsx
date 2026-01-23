@@ -39,7 +39,7 @@ const challenges = [
 
 const difficultyColors: Record<string, string> = {
   Beginner: "text-emerald-400",
-  Intermediate: "text-gold",
+  Intermediate: "text-ocean",
   Advanced: "text-rose-400",
 };
 
@@ -50,7 +50,7 @@ export function PracticeChallenges() {
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
           <div>
-            <span className="text-gold text-sm font-medium tracking-widest uppercase mb-4 block">
+            <span className="text-ocean text-sm font-medium tracking-widest uppercase mb-4 block">
               Challenges
             </span>
             <h2 className="text-3xl md:text-4xl font-serif font-semibold mb-4">
@@ -61,7 +61,7 @@ export function PracticeChallenges() {
               climb the ranks of prompt engineering mastery.
             </p>
           </div>
-          <Button variant="gold-outline" className="mt-6 md:mt-0">
+          <Button variant="ocean-outline" className="mt-6 md:mt-0 border-ocean text-ocean hover:bg-ocean/10">
             View All Challenges
             <ChevronRight className="w-4 h-4" />
           </Button>
@@ -74,18 +74,18 @@ export function PracticeChallenges() {
               key={index}
               className={cn(
                 "group p-6 bg-card border border-border transition-all duration-300",
-                "hover:border-gold/40 flex flex-col md:flex-row md:items-center gap-4 cursor-pointer"
+                "hover:border-ocean/40 flex flex-col md:flex-row md:items-center gap-4 cursor-pointer"
               )}
             >
               {/* Number */}
-              <div className="flex-shrink-0 w-12 h-12 flex items-center justify-center border border-gold/30 font-serif text-xl text-gold">
+              <div className="flex-shrink-0 w-12 h-12 flex items-center justify-center border border-ocean/30 font-serif text-xl text-ocean">
                 {String(index + 1).padStart(2, "0")}
               </div>
 
               {/* Content */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-3 mb-1">
-                  <h3 className="text-lg font-serif font-semibold group-hover:text-gold transition-colors">
+                  <h3 className="text-lg font-serif font-semibold group-hover:text-ocean transition-colors">
                     {challenge.title}
                   </h3>
                   <span className={cn("text-sm font-medium", difficultyColors[challenge.difficulty])}>
@@ -100,21 +100,21 @@ export function PracticeChallenges() {
               {/* Meta */}
               <div className="flex items-center gap-6 text-sm text-muted-foreground">
                 <div className="flex items-center gap-1.5">
-                  <Clock className="w-4 h-4 text-gold/70" />
+                  <Clock className="w-4 h-4 text-ocean/70" />
                   <span>{challenge.time}</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <Star className="w-4 h-4 text-gold" />
+                  <Star className="w-4 h-4 text-ocean" />
                   <span>{challenge.points} pts</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <Users className="w-4 h-4 text-gold/70" />
+                  <Users className="w-4 h-4 text-ocean/70" />
                   <span>{challenge.participants.toLocaleString()}</span>
                 </div>
               </div>
 
               {/* Arrow */}
-              <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-gold group-hover:translate-x-1 transition-all" />
+              <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-ocean group-hover:translate-x-1 transition-all" />
             </div>
           ))}
         </div>

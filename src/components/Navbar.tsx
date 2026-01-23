@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Crown } from "lucide-react";
+import { Menu, X, Waves } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -27,7 +27,7 @@ export function Navbar() {
             to="/" 
             className="flex items-center gap-2.5 text-xl font-serif font-semibold transition-all duration-300 hover:opacity-80"
           >
-            <Crown className="w-6 h-6 text-gold" />
+            <Waves className="w-6 h-6 text-ocean" />
             <span className="text-gradient">PromptLab</span>
           </Link>
 
@@ -40,13 +40,13 @@ export function Navbar() {
                 className={cn(
                   "px-4 py-2 text-sm font-medium transition-all duration-300 relative",
                   location.pathname === link.path
-                    ? "text-gold"
+                    ? "text-ocean"
                     : "text-muted-foreground hover:text-foreground"
                 )}
               >
                 {link.name}
                 {location.pathname === link.path && (
-                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-gold" />
+                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-ocean" />
                 )}
               </Link>
             ))}
@@ -54,7 +54,7 @@ export function Navbar() {
 
           {/* CTA Button */}
           <div className="hidden lg:block">
-            <Button variant="gold" size="sm">
+            <Button variant="ocean" size="sm">
               Start Learning
             </Button>
           </div>
@@ -85,7 +85,7 @@ export function Navbar() {
                 className={cn(
                   "px-4 py-3 text-sm font-medium transition-all duration-300",
                   location.pathname === link.path
-                    ? "text-gold bg-gold/5"
+                    ? "text-ocean bg-ocean/5"
                     : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                 )}
               >
@@ -93,7 +93,7 @@ export function Navbar() {
               </Link>
             ))}
             <div className="pt-4 px-4">
-              <Button variant="gold" className="w-full">
+              <Button variant="ocean" className="w-full">
                 Start Learning
               </Button>
             </div>

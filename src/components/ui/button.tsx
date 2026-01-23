@@ -15,10 +15,10 @@ const buttonVariants = cva(
         secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-muted hover:text-foreground",
         link: "text-primary underline-offset-4 hover:underline",
-        // Elegant gold variants
-        gold: "bg-gradient-to-r from-gold-dark via-gold to-gold-dark text-background font-semibold border border-gold/30 hover:shadow-lg hover:shadow-gold/20 hover:scale-[1.02] active:scale-100",
-        "gold-outline": "border border-gold/50 bg-transparent text-gold hover:bg-gold/10 hover:border-gold",
-        elegant: "bg-card border border-border text-foreground hover:border-gold/50 hover:text-gold",
+        // Ocean blue variants
+        ocean: "bg-gradient-to-r from-ocean-dark via-ocean to-ocean-light text-white font-semibold border border-ocean/30 hover:shadow-lg hover:shadow-ocean/20 hover:scale-[1.02] active:scale-100",
+        "ocean-outline": "border-2 border-white/30 bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 hover:border-white/50",
+        elegant: "bg-card border border-border text-foreground hover:border-ocean/50 hover:text-ocean",
       },
       size: {
         default: "h-10 px-5 py-2 rounded-md",
