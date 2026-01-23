@@ -42,17 +42,21 @@ const Practice = () => {
         <div className="container mx-auto px-4">
           {/* Header */}
           <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              Practice <span className="text-gradient">Arena</span>
+            <span className="text-gold text-sm font-medium tracking-widest uppercase mb-4 block">
+              Practice
+            </span>
+            <h1 className="text-4xl md:text-5xl font-serif font-semibold mb-4">
+              The <span className="text-gradient">Practice Arena</span>
             </h1>
+            <div className="divider-gold max-w-xs mx-auto mb-6" />
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Write prompts, get instant AI feedback, and improve your skills in real-time.
+              Refine your craft with instant AI feedback and elevate your prompting skills.
             </p>
           </div>
 
           <div className="max-w-4xl mx-auto">
             {/* Prompt Input */}
-            <div className="glass rounded-2xl border p-6 mb-6">
+            <div className="bg-card border border-border p-6 mb-6">
               <label className="block text-sm font-medium mb-3 text-muted-foreground">
                 Your Prompt
               </label>
@@ -75,7 +79,7 @@ const Practice = () => {
                   </Button>
                 </div>
                 <Button
-                  variant="neon"
+                  variant="gold"
                   onClick={handleSubmit}
                   disabled={!prompt.trim() || isLoading}
                 >

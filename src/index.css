@@ -2,61 +2,61 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Prompt Engineering Learning Platform - Cyberpunk Dark Theme */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+/* PromptLab - Elegant Black & Gold Classic Theme */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
 
 @layer base {
   :root {
-    /* Dark cyberpunk palette */
-    --background: 240 10% 4%;
+    /* Elegant dark palette */
+    --background: 0 0% 3%;
     --foreground: 0 0% 98%;
 
-    --card: 240 10% 6%;
+    --card: 0 0% 6%;
     --card-foreground: 0 0% 98%;
 
-    --popover: 240 10% 6%;
+    --popover: 0 0% 6%;
     --popover-foreground: 0 0% 98%;
 
-    /* Neon blue primary */
-    --primary: 192 100% 50%;
-    --primary-foreground: 240 10% 4%;
+    /* Rich gold primary */
+    --primary: 43 74% 49%;
+    --primary-foreground: 0 0% 3%;
 
-    /* Purple secondary */
-    --secondary: 270 70% 60%;
+    /* Warm gold secondary */
+    --secondary: 38 50% 35%;
     --secondary-foreground: 0 0% 98%;
 
-    --muted: 240 10% 12%;
-    --muted-foreground: 240 5% 65%;
+    --muted: 0 0% 10%;
+    --muted-foreground: 0 0% 55%;
 
-    --accent: 280 80% 55%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 43 74% 49%;
+    --accent-foreground: 0 0% 3%;
 
-    --destructive: 0 84% 60%;
+    --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 240 10% 15%;
-    --input: 240 10% 15%;
-    --ring: 192 100% 50%;
+    --border: 0 0% 14%;
+    --input: 0 0% 14%;
+    --ring: 43 74% 49%;
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
 
-    /* Custom neon colors */
-    --neon-blue: 192 100% 50%;
-    --neon-purple: 270 70% 60%;
-    --neon-pink: 320 80% 55%;
+    /* Gold color scale */
+    --gold: 43 74% 49%;
+    --gold-light: 43 80% 65%;
+    --gold-dark: 38 60% 35%;
+    --gold-muted: 43 30% 25%;
     
-    /* Glow effects */
-    --glow-blue: 0 0 20px hsl(192 100% 50% / 0.5);
-    --glow-purple: 0 0 20px hsl(270 70% 60% / 0.5);
+    /* Cream accent */
+    --cream: 40 30% 92%;
 
-    --sidebar-background: 240 10% 4%;
+    --sidebar-background: 0 0% 3%;
     --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 192 100% 50%;
-    --sidebar-primary-foreground: 240 10% 4%;
-    --sidebar-accent: 240 10% 12%;
+    --sidebar-primary: 43 74% 49%;
+    --sidebar-primary-foreground: 0 0% 3%;
+    --sidebar-accent: 0 0% 10%;
     --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 240 10% 15%;
-    --sidebar-ring: 192 100% 50%;
+    --sidebar-border: 0 0% 14%;
+    --sidebar-ring: 43 74% 49%;
   }
 }
 
@@ -66,13 +66,17 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
-    font-family: 'Inter', sans-serif;
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
   }
 
-  /* Custom scrollbar */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+
+  /* Elegant scrollbar */
   ::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
   }
 
   ::-webkit-scrollbar-track {
@@ -80,57 +84,59 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-muted rounded-full;
+    @apply bg-gold-muted rounded-full;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-muted-foreground/50;
+    background: hsl(var(--gold));
   }
 }
 
 @layer utilities {
-  /* Gradient text utility */
+  /* Gold gradient text */
   .text-gradient {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, hsl(var(--neon-blue)), hsl(var(--neon-purple)));
+    background-image: linear-gradient(135deg, hsl(var(--gold-light)), hsl(var(--gold)), hsl(var(--gold-dark)));
   }
 
   .text-gradient-animated {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, hsl(var(--neon-blue)), hsl(var(--neon-purple)), hsl(var(--neon-pink)), hsl(var(--neon-blue)));
+    background-image: linear-gradient(135deg, hsl(var(--gold-light)), hsl(var(--gold)), hsl(var(--gold-dark)), hsl(var(--gold-light)));
     background-size: 300% 300%;
-    animation: gradient-shift 6s ease infinite;
+    animation: gradient-shift 8s ease infinite;
   }
 
-  /* Neon glow effects */
-  .glow-blue {
-    box-shadow: 0 0 20px hsl(var(--neon-blue) / 0.4), 0 0 40px hsl(var(--neon-blue) / 0.2);
+  /* Elegant gold glow */
+  .glow-gold {
+    box-shadow: 0 0 30px hsl(var(--gold) / 0.15), 0 0 60px hsl(var(--gold) / 0.08);
   }
 
-  .glow-purple {
-    box-shadow: 0 0 20px hsl(var(--neon-purple) / 0.4), 0 0 40px hsl(var(--neon-purple) / 0.2);
-  }
-
-  .glow-text {
-    text-shadow: 0 0 10px hsl(var(--neon-blue) / 0.8), 0 0 20px hsl(var(--neon-blue) / 0.5);
-  }
-
-  /* Glass morphism */
+  /* Classic glass effect */
   .glass {
-    @apply bg-card/60 backdrop-blur-xl border border-border/50;
+    @apply bg-card/80 backdrop-blur-md border border-border;
   }
 
-  /* Grid pattern background */
+  .glass-gold {
+    @apply bg-card/80 backdrop-blur-md border border-gold-muted/30;
+  }
+
+  /* Subtle grid pattern */
   .bg-grid {
     background-image: 
-      linear-gradient(hsl(var(--border) / 0.3) 1px, transparent 1px),
-      linear-gradient(90deg, hsl(var(--border) / 0.3) 1px, transparent 1px);
-    background-size: 60px 60px;
+      linear-gradient(hsl(var(--border) / 0.4) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--border) / 0.4) 1px, transparent 1px);
+    background-size: 80px 80px;
   }
 
-  /* Noise texture overlay */
-  .bg-noise {
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  /* Elegant divider */
+  .divider-gold {
+    @apply h-px w-full;
+    background: linear-gradient(90deg, transparent, hsl(var(--gold) / 0.5), transparent);
+  }
+
+  /* Gold border accent */
+  .border-gold-gradient {
+    border-image: linear-gradient(135deg, hsl(var(--gold-dark)), hsl(var(--gold)), hsl(var(--gold-dark))) 1;
   }
 }
 
@@ -144,43 +150,32 @@
   }
 }
 
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-@keyframes pulse-glow {
-  0%, 100% {
+  to {
     opacity: 1;
-    box-shadow: 0 0 20px hsl(var(--neon-blue) / 0.4);
-  }
-  50% {
-    opacity: 0.8;
-    box-shadow: 0 0 40px hsl(var(--neon-blue) / 0.6);
+    transform: translateY(0);
   }
 }
 
-@keyframes border-glow {
-  0%, 100% {
-    border-color: hsl(var(--neon-blue) / 0.5);
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
   }
-  50% {
-    border-color: hsl(var(--neon-purple) / 0.5);
+  100% {
+    background-position: 200% 0;
   }
 }
 
-.animate-float {
-  animation: float 6s ease-in-out infinite;
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s ease-out forwards;
 }
 
-.animate-pulse-glow {
-  animation: pulse-glow 3s ease-in-out infinite;
-}
-
-.animate-border-glow {
-  animation: border-glow 4s ease-in-out infinite;
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent, hsl(var(--gold) / 0.1), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
 }

@@ -142,7 +142,7 @@ const About = () => {
             <p className="text-muted-foreground mb-6 max-w-md mx-auto">
               Join thousands of learners mastering prompt engineering with PromptLab.
             </p>
-            <Button variant="neon" size="xl">
+            <Button variant="gold" size="xl">
               Get Started Free
             </Button>
           </div>

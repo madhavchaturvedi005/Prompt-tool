@@ -39,25 +39,28 @@ const Dashboard = () => {
         <div className="container mx-auto px-4">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-3xl md:text-4xl font-bold mb-2">
+            <span className="text-gold text-sm font-medium tracking-widest uppercase mb-4 block">
+              Dashboard
+            </span>
+            <h1 className="text-3xl md:text-4xl font-serif font-semibold mb-2">
               Welcome back, <span className="text-gradient">Learner</span>
             </h1>
             <p className="text-muted-foreground">
-              Track your progress and keep improving your prompt engineering skills.
+              Track your progress and continue your path to mastery.
             </p>
           </div>
 
           {/* Stats Cards */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             {[
-              { icon: Trophy, label: "Global Rank", value: "#127", color: "text-yellow-400" },
+              { icon: Trophy, label: "Global Rank", value: "#127", color: "text-gold" },
               { icon: Flame, label: "Current Streak", value: "7 days", color: "text-orange-400" },
-              { icon: Star, label: "Total Points", value: "2,450", color: "text-neon-blue" },
-              { icon: Target, label: "Challenges Done", value: "12", color: "text-green-400" },
+              { icon: Star, label: "Total Points", value: "2,450", color: "text-gold" },
+              { icon: Target, label: "Challenges Done", value: "12", color: "text-emerald-400" },
             ].map((stat, i) => (
-              <div key={i} className="glass rounded-xl border p-5 transition-all hover:border-neon-blue/50">
+              <div key={i} className="bg-card border border-border p-5 transition-all hover:border-gold/40">
                 <stat.icon className={cn("w-8 h-8 mb-3", stat.color)} />
-                <p className="text-2xl font-bold">{stat.value}</p>
+                <p className="text-2xl font-serif font-semibold">{stat.value}</p>
                 <p className="text-sm text-muted-foreground">{stat.label}</p>
               </div>
             ))}
@@ -103,7 +106,7 @@ const Dashboard = () => {
                     <span>8/18 lessons</span>
                   </div>
                 </div>
-                <Button variant="neon" className="w-full">
+                <Button variant="gold" className="w-full">
                   Continue Course
                 </Button>
               </div>

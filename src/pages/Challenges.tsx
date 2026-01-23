@@ -176,7 +176,7 @@ const Challenges = () => {
                         Score: {challenge.score}/100
                       </div>
                     ) : challenge.status === "in-progress" ? (
-                      <Button variant="neon" size="sm">
+                      <Button variant="gold" size="sm">
                         Continue
                       </Button>
                     ) : challenge.status === "locked" ? (
@@ -184,7 +184,7 @@ const Challenges = () => {
                         Locked
                       </Button>
                     ) : (
-                      <Button variant="neon-outline" size="sm">
+                      <Button variant="gold-outline" size="sm">
                         Start
                       </Button>
                     )}
