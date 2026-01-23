@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Waves } from "lucide-react";
+import { Menu, X, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -25,10 +25,10 @@ export function Navbar() {
           {/* Logo */}
           <Link 
             to="/" 
-            className="flex items-center gap-2.5 text-xl font-serif font-semibold transition-all duration-300 hover:opacity-80"
+            className="flex items-center gap-2.5 text-xl font-heading font-semibold transition-all duration-300 hover:opacity-80"
           >
-            <Waves className="w-6 h-6 text-ocean" />
-            <span className="text-gradient">PromptLab</span>
+            <Sparkles className="w-6 h-6 text-foreground" />
+            <span className="text-foreground">PromptLab</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -40,13 +40,13 @@ export function Navbar() {
                 className={cn(
                   "px-4 py-2 text-sm font-medium transition-all duration-300 relative",
                   location.pathname === link.path
-                    ? "text-ocean"
+                    ? "text-foreground"
                     : "text-muted-foreground hover:text-foreground"
                 )}
               >
                 {link.name}
                 {location.pathname === link.path && (
-                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-ocean" />
+                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-foreground" />
                 )}
               </Link>
             ))}
@@ -54,7 +54,7 @@ export function Navbar() {
 
           {/* CTA Button */}
           <div className="hidden lg:block">
-            <Button variant="ocean" size="sm">
+            <Button variant="default" size="sm">
               Start Learning
             </Button>
           </div>
@@ -85,7 +85,7 @@ export function Navbar() {
                 className={cn(
                   "px-4 py-3 text-sm font-medium transition-all duration-300",
                   location.pathname === link.path
-                    ? "text-ocean bg-ocean/5"
+                    ? "text-foreground bg-accent"
                     : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                 )}
               >
@@ -93,7 +93,7 @@ export function Navbar() {
               </Link>
             ))}
             <div className="pt-4 px-4">
-              <Button variant="ocean" className="w-full">
+              <Button variant="default" className="w-full">
                 Start Learning
               </Button>
             </div>
