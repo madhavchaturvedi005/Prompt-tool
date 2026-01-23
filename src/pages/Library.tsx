@@ -90,9 +90,13 @@ const Library = () => {
         <div className="container mx-auto px-4">
           {/* Header */}
           <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            <span className="text-gold text-sm font-medium tracking-widest uppercase mb-4 block">
+              Resources
+            </span>
+            <h1 className="text-4xl md:text-5xl font-serif font-semibold mb-4">
               Prompt <span className="text-gradient">Library</span>
             </h1>
+            <div className="divider-gold max-w-xs mx-auto mb-6" />
             <p className="text-muted-foreground max-w-2xl mx-auto">
               A curated collection of high-quality prompts for every use case.
             </p>
@@ -146,7 +150,7 @@ const Library = () => {
                     <p className="text-sm text-muted-foreground">{p.description}</p>
                   </div>
                   <Button
-                    variant="neon-outline"
+                    variant="gold-outline"
                     size="sm"
                     onClick={() => handleCopy(p.id, p.prompt)}
                   >

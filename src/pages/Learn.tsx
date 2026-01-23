@@ -75,10 +75,10 @@ const courses = [
 ];
 
 const levelColors: Record<string, string> = {
-  Beginner: "bg-green-500/20 text-green-400 border-green-500/30",
-  Intermediate: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
-  Advanced: "bg-red-500/20 text-red-400 border-red-500/30",
-  "All Levels": "bg-neon-blue/20 text-neon-blue border-neon-blue/30",
+  Beginner: "text-emerald-400 border-emerald-400/30",
+  Intermediate: "text-gold border-gold/30",
+  Advanced: "text-rose-400 border-rose-400/30",
+  "All Levels": "text-sky-400 border-sky-400/30",
 };
 
 const Learn = () => {
@@ -90,9 +90,13 @@ const Learn = () => {
         <div className="container mx-auto px-4">
           {/* Header */}
           <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            <span className="text-gold text-sm font-medium tracking-widest uppercase mb-4 block">
+              Curriculum
+            </span>
+            <h1 className="text-4xl md:text-5xl font-serif font-semibold mb-4">
               Learning <span className="text-gradient">Paths</span>
             </h1>
+            <div className="divider-gold max-w-xs mx-auto mb-6" />
             <p className="text-muted-foreground max-w-2xl mx-auto">
               Structured courses designed to take you from beginner to expert in prompt engineering.
             </p>
@@ -178,7 +182,7 @@ const Learn = () => {
                   )}
 
                   <Button
-                    variant={course.locked ? "outline" : "neon"}
+                    variant={course.locked ? "outline" : "gold"}
                     className="w-full"
                     disabled={course.locked}
                   >
