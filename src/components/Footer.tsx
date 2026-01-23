@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Crown, Github, Twitter, Linkedin, Mail } from "lucide-react";
+import { Waves, Github, Twitter, Linkedin, Mail } from "lucide-react";
 
 const footerLinks = {
   Platform: [
@@ -42,7 +42,7 @@ export function Footer() {
           {/* Brand */}
           <div className="col-span-2">
             <Link to="/" className="flex items-center gap-2.5 text-xl font-serif font-semibold mb-4">
-              <Crown className="w-6 h-6 text-gold" />
+              <Waves className="w-6 h-6 text-ocean" />
               <span className="text-gradient">PromptLab</span>
             </Link>
             <p className="text-muted-foreground text-sm mb-6 max-w-xs leading-relaxed">
@@ -56,7 +56,7 @@ export function Footer() {
                   key={social.label}
                   href={social.href}
                   aria-label={social.label}
-                  className="w-10 h-10 border border-border flex items-center justify-center text-muted-foreground hover:text-gold hover:border-gold/50 transition-all"
+                  className="w-10 h-10 border border-border flex items-center justify-center text-muted-foreground hover:text-ocean hover:border-ocean/50 transition-all"
                 >
                   <social.icon className="w-4 h-4" />
                 </a>
@@ -73,7 +73,7 @@ export function Footer() {
                   <li key={link.name}>
                     <Link
                       to={link.path}
-                      className="text-sm text-muted-foreground hover:text-gold transition-colors"
+                      className="text-sm text-muted-foreground hover:text-ocean transition-colors"
                     >
                       {link.name}
                     </Link>
@@ -85,13 +85,13 @@ export function Footer() {
         </div>
 
         {/* Divider */}
-        <div className="divider-gold mb-8" />
+        <div className="divider-ocean mb-8" />
 
         {/* Bottom Bar */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
           <p>© 2025 PromptLab. All rights reserved.</p>
           <p>
-            Crafted with <span className="text-gold">excellence</span> for the discerning learner
+            Crafted with <span className="text-ocean">excellence</span> for the discerning learner
           </p>
         </div>
       </div>

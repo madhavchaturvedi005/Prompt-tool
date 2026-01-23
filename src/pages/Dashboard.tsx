@@ -39,7 +39,7 @@ const Dashboard = () => {
         <div className="container mx-auto px-4">
           {/* Header */}
           <div className="mb-8">
-            <span className="text-gold text-sm font-medium tracking-widest uppercase mb-4 block">
+            <span className="text-ocean text-sm font-medium tracking-widest uppercase mb-4 block">
               Dashboard
             </span>
             <h1 className="text-3xl md:text-4xl font-serif font-semibold mb-2">
@@ -53,12 +53,12 @@ const Dashboard = () => {
           {/* Stats Cards */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             {[
-              { icon: Trophy, label: "Global Rank", value: "#127", color: "text-gold" },
+              { icon: Trophy, label: "Global Rank", value: "#127", color: "text-ocean" },
               { icon: Flame, label: "Current Streak", value: "7 days", color: "text-orange-400" },
-              { icon: Star, label: "Total Points", value: "2,450", color: "text-gold" },
+              { icon: Star, label: "Total Points", value: "2,450", color: "text-ocean" },
               { icon: Target, label: "Challenges Done", value: "12", color: "text-emerald-400" },
             ].map((stat, i) => (
-              <div key={i} className="bg-card border border-border p-5 transition-all hover:border-gold/40">
+              <div key={i} className="bg-card border border-border p-5 transition-all hover:border-ocean/40">
                 <stat.icon className={cn("w-8 h-8 mb-3", stat.color)} />
                 <p className="text-2xl font-serif font-semibold">{stat.value}</p>
                 <p className="text-sm text-muted-foreground">{stat.label}</p>
@@ -81,7 +81,7 @@ const Dashboard = () => {
                 {weeklyProgress.map((day, i) => (
                   <div key={i} className="flex-1 flex flex-col items-center gap-2">
                     <div className="w-full bg-muted rounded-t-lg relative overflow-hidden" style={{ height: `${Math.max(day.value, 5)}%` }}>
-                      <div className="absolute inset-0 bg-gradient-to-t from-neon-blue to-neon-purple opacity-80" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-ocean to-ocean-light opacity-80" />
                     </div>
                     <span className="text-xs text-muted-foreground">{day.day}</span>
                   </div>
@@ -95,18 +95,18 @@ const Dashboard = () => {
               <div className="space-y-4">
                 <div className="p-4 rounded-xl bg-muted/50">
                   <div className="flex items-center gap-3 mb-2">
-                    <BookOpen className="w-5 h-5 text-neon-blue" />
+                    <BookOpen className="w-5 h-5 text-ocean" />
                     <span className="font-medium">Advanced Techniques</span>
                   </div>
                   <div className="h-2 bg-muted rounded-full overflow-hidden mb-2">
-                    <div className="h-full bg-gradient-to-r from-neon-blue to-neon-purple w-[45%]" />
+                    <div className="h-full bg-gradient-to-r from-ocean to-ocean-light w-[45%]" />
                   </div>
                   <div className="flex items-center justify-between text-xs text-muted-foreground">
                     <span>45% complete</span>
                     <span>8/18 lessons</span>
                   </div>
                 </div>
-                <Button variant="gold" className="w-full">
+                <Button variant="ocean" className="w-full">
                   Continue Course
                 </Button>
               </div>
@@ -120,12 +120,12 @@ const Dashboard = () => {
                   <div key={i} className="flex items-center gap-3">
                     <div className={cn(
                       "w-10 h-10 rounded-lg flex items-center justify-center",
-                      activity.type === "challenge" && "bg-neon-blue/20",
-                      activity.type === "lesson" && "bg-neon-purple/20",
+                      activity.type === "challenge" && "bg-ocean/20",
+                      activity.type === "lesson" && "bg-ocean-light/20",
                       activity.type === "streak" && "bg-orange-400/20"
                     )}>
-                      {activity.type === "challenge" && <Target className="w-5 h-5 text-neon-blue" />}
-                      {activity.type === "lesson" && <BookOpen className="w-5 h-5 text-neon-purple" />}
+                      {activity.type === "challenge" && <Target className="w-5 h-5 text-ocean" />}
+                      {activity.type === "lesson" && <BookOpen className="w-5 h-5 text-ocean-light" />}
                       {activity.type === "streak" && <Flame className="w-5 h-5 text-orange-400" />}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -133,7 +133,7 @@ const Dashboard = () => {
                       <p className="text-xs text-muted-foreground">{activity.time}</p>
                     </div>
                     {activity.points > 0 && (
-                      <span className="text-sm font-medium text-neon-blue">+{activity.points}</span>
+                      <span className="text-sm font-medium text-ocean">+{activity.points}</span>
                     )}
                   </div>
                 ))}

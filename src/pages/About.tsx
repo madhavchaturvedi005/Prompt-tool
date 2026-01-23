@@ -51,8 +51,8 @@ const About = () => {
         <div className="container mx-auto px-4">
           {/* Hero */}
           <div className="text-center mb-20">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border border-neon-blue/30 mb-6">
-              <Sparkles className="w-4 h-4 text-neon-blue" />
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border border-ocean/30 mb-6">
+              <Sparkles className="w-4 h-4 text-ocean" />
               <span className="text-sm text-muted-foreground">Our Story</span>
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
@@ -68,9 +68,9 @@ const About = () => {
           {/* Values */}
           <div className="grid md:grid-cols-3 gap-6 mb-20">
             {values.map((value, i) => (
-              <div key={i} className="glass rounded-2xl border p-8 text-center transition-all hover:border-neon-blue/50">
-                <div className="w-14 h-14 mx-auto rounded-xl bg-gradient-to-br from-neon-blue/20 to-neon-purple/20 flex items-center justify-center mb-4">
-                  <value.icon className="w-7 h-7 text-neon-blue" />
+              <div key={i} className="glass rounded-2xl border p-8 text-center transition-all hover:border-ocean/50">
+                <div className="w-14 h-14 mx-auto rounded-xl bg-gradient-to-br from-ocean/20 to-ocean-light/20 flex items-center justify-center mb-4">
+                  <value.icon className="w-7 h-7 text-ocean" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">{value.title}</h3>
                 <p className="text-muted-foreground">{value.description}</p>
@@ -108,23 +108,23 @@ const About = () => {
 
           <div className="grid md:grid-cols-3 gap-6 mb-20">
             {team.map((member, i) => (
-              <div key={i} className="glass rounded-2xl border p-6 text-center transition-all hover:border-neon-blue/50 group">
+              <div key={i} className="glass rounded-2xl border p-6 text-center transition-all hover:border-ocean/50 group">
                 <div className="relative w-24 h-24 mx-auto mb-4">
                   <img
                     src={member.image}
                     alt={member.name}
                     className="w-full h-full rounded-full object-cover"
                   />
-                  <div className="absolute inset-0 rounded-full bg-gradient-to-br from-neon-blue/20 to-neon-purple/20 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="absolute inset-0 rounded-full bg-gradient-to-br from-ocean/20 to-ocean-light/20 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
                 <h3 className="text-lg font-semibold">{member.name}</h3>
-                <p className="text-sm text-neon-blue mb-2">{member.role}</p>
+                <p className="text-sm text-ocean mb-2">{member.role}</p>
                 <p className="text-sm text-muted-foreground mb-4">{member.bio}</p>
                 <div className="flex justify-center gap-2">
                   {[Twitter, Linkedin, Github].map((Icon, j) => (
                     <button
                       key={j}
-                      className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center text-muted-foreground hover:text-neon-blue hover:bg-muted/80 transition-all"
+                      className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center text-muted-foreground hover:text-ocean hover:bg-muted/80 transition-all"
                     >
                       <Icon className="w-4 h-4" />
                     </button>
@@ -142,7 +142,7 @@ const About = () => {
             <p className="text-muted-foreground mb-6 max-w-md mx-auto">
               Join thousands of learners mastering prompt engineering with PromptLab.
             </p>
-            <Button variant="gold" size="xl">
+            <Button variant="ocean" size="xl">
               Get Started Free
             </Button>
           </div>

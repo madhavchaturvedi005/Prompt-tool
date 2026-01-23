@@ -90,13 +90,13 @@ const Library = () => {
         <div className="container mx-auto px-4">
           {/* Header */}
           <div className="text-center mb-12">
-            <span className="text-gold text-sm font-medium tracking-widest uppercase mb-4 block">
+            <span className="text-ocean text-sm font-medium tracking-widest uppercase mb-4 block">
               Resources
             </span>
             <h1 className="text-4xl md:text-5xl font-serif font-semibold mb-4">
               Prompt <span className="text-gradient">Library</span>
             </h1>
-            <div className="divider-gold max-w-xs mx-auto mb-6" />
+            <div className="divider-ocean max-w-xs mx-auto mb-6" />
             <p className="text-muted-foreground max-w-2xl mx-auto">
               A curated collection of high-quality prompts for every use case.
             </p>
@@ -111,7 +111,7 @@ const Library = () => {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search prompts..."
-                className="w-full h-12 pl-12 pr-4 rounded-xl bg-muted/50 border border-border focus:border-neon-blue/50 focus:outline-none focus:ring-2 focus:ring-neon-blue/20 transition-all"
+                className="w-full h-12 pl-12 pr-4 rounded-xl bg-muted/50 border border-border focus:border-ocean/50 focus:outline-none focus:ring-2 focus:ring-ocean/20 transition-all"
               />
             </div>
             <div className="flex flex-wrap gap-2">
@@ -122,7 +122,7 @@ const Library = () => {
                   className={cn(
                     "px-4 py-2 rounded-lg text-sm font-medium transition-all",
                     activeCategory === cat
-                      ? "bg-neon-blue text-background"
+                      ? "bg-ocean text-white"
                       : "bg-muted text-muted-foreground hover:text-foreground"
                   )}
                 >
@@ -137,7 +137,7 @@ const Library = () => {
             {filteredPrompts.map((p) => (
               <div
                 key={p.id}
-                className="glass rounded-2xl border p-6 transition-all duration-300 hover:border-neon-blue/50"
+                className="glass rounded-2xl border p-6 transition-all duration-300 hover:border-ocean/50"
               >
                 <div className="flex items-start justify-between mb-3">
                   <div>
@@ -150,8 +150,9 @@ const Library = () => {
                     <p className="text-sm text-muted-foreground">{p.description}</p>
                   </div>
                   <Button
-                    variant="gold-outline"
+                    variant="outline"
                     size="sm"
+                    className="border-ocean text-ocean hover:bg-ocean/10"
                     onClick={() => handleCopy(p.id, p.prompt)}
                   >
                     {copiedId === p.id ? (

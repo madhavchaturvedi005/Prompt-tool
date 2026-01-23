@@ -42,13 +42,13 @@ const Practice = () => {
         <div className="container mx-auto px-4">
           {/* Header */}
           <div className="text-center mb-12">
-            <span className="text-gold text-sm font-medium tracking-widest uppercase mb-4 block">
+            <span className="text-ocean text-sm font-medium tracking-widest uppercase mb-4 block">
               Practice
             </span>
             <h1 className="text-4xl md:text-5xl font-serif font-semibold mb-4">
               The <span className="text-gradient">Practice Arena</span>
             </h1>
-            <div className="divider-gold max-w-xs mx-auto mb-6" />
+            <div className="divider-ocean max-w-xs mx-auto mb-6" />
             <p className="text-muted-foreground max-w-2xl mx-auto">
               Refine your craft with instant AI feedback and elevate your prompting skills.
             </p>
@@ -64,7 +64,7 @@ const Practice = () => {
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 placeholder="Write your prompt here..."
-                className="w-full h-40 bg-muted/50 rounded-xl p-4 text-foreground placeholder:text-muted-foreground resize-none focus:outline-none focus:ring-2 focus:ring-neon-blue/50 transition-all"
+                className="w-full h-40 bg-muted/50 rounded-xl p-4 text-foreground placeholder:text-muted-foreground resize-none focus:outline-none focus:ring-2 focus:ring-ocean/50 transition-all"
               />
               <div className="flex items-center justify-between mt-4">
                 <div className="flex items-center gap-2">
@@ -79,12 +79,12 @@ const Practice = () => {
                   </Button>
                 </div>
                 <Button
-                  variant="gold"
+                  variant="ocean"
                   onClick={handleSubmit}
                   disabled={!prompt.trim() || isLoading}
                 >
                   {isLoading ? (
-                    <div className="w-4 h-4 border-2 border-background border-t-transparent rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   ) : (
                     <>
                       <Send className="w-4 h-4" />
@@ -116,7 +116,7 @@ const Practice = () => {
               <div className="glass rounded-2xl border p-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-neon-blue" />
+                    <Sparkles className="w-5 h-5 text-ocean" />
                     <span className="font-medium">AI Feedback</span>
                   </div>
                   <Button
