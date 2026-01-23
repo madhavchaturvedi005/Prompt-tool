@@ -22,7 +22,7 @@ export function HeroSection() {
           </div>
 
           {/* Main Heading */}
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif font-semibold leading-tight mb-6 tracking-tight text-ocean-deep drop-shadow-sm">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading font-bold leading-tight mb-6 tracking-tight text-ocean-deep drop-shadow-sm">
             Master the Craft of
             <br />
             <span className="bg-gradient-to-r from-ocean-dark via-ocean to-ocean-light bg-clip-text text-transparent">
@@ -62,7 +62,7 @@ export function HeroSection() {
                 key={index}
                 className="flex flex-col items-center gap-2 p-6 rounded-2xl bg-white/70 backdrop-blur-md border border-ocean/20 shadow-lg transition-all duration-300 hover:bg-white/90 hover:scale-105"
               >
-                <span className="text-3xl md:text-4xl font-serif font-semibold text-ocean-dark">
+                <span className="text-3xl md:text-4xl font-heading font-bold text-ocean-dark">
                   {stat.value}
                 </span>
                 <span className="text-sm text-ocean-dark/70">
