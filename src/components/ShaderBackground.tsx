@@ -56,10 +56,10 @@ const ShaderBackground = () => {
     float getPlasmaY(float x, float horizontalFade, float offset, vec2 mouseSpace) {
       float baseY = random(x * lineFrequency + iTime * lineSpeed) * horizontalFade * lineAmplitude + offset;
       
-      // Mouse interaction - push lines away from cursor
-      float mouseInfluence = 2.0;
+      // Mouse interaction - gentle push away from cursor
+      float mouseInfluence = 0.6;
       float mouseDist = length(vec2(x, baseY) - mouseSpace);
-      float mouseEffect = smoothstep(2.0, 0.0, mouseDist) * mouseInfluence;
+      float mouseEffect = smoothstep(1.2, 0.0, mouseDist) * mouseInfluence;
       
       // Push the line away from mouse
       float pushDirection = sign(baseY - mouseSpace.y);
