@@ -2,6 +2,7 @@ import { Navbar } from "@/components/Navbar";
 import { HeroSection } from "@/components/HeroSection";
 import { LearningModules } from "@/components/LearningModules";
 import { PracticeChallenges } from "@/components/PracticeChallenges";
+import { ClosingCTA } from "@/components/ClosingCTA";
 import { Footer } from "@/components/Footer";
 
 const Index = () => {
@@ -18,6 +19,9 @@ const Index = () => {
       
       {/* Practice Challenges - Interactive challenges */}
       <PracticeChallenges />
+      
+      {/* Closing CTA - Mirror of hero section */}
+      <ClosingCTA />
       
       {/* Footer */}
       <Footer />
