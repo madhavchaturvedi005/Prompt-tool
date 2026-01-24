@@ -1,6 +1,6 @@
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
-import { Trophy, Clock, Star, Users, Flame, Medal, ChevronLeft, Send, CheckCircle, Lightbulb, Play, RotateCcw, Copy, Check } from "lucide-react";
+import { Trophy, Clock, Star, Users, Flame, Medal, Target, Lock, ChevronLeft, Send, CheckCircle, Lightbulb, Play, RotateCcw, Copy, Check, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
@@ -137,95 +137,69 @@ const challengesData: Challenge[] = [
 ];
 
 const difficultyColors: Record<string, string> = {
-  Easy: "text-emerald-400 border-emerald-400/30 bg-emerald-400/10",
-  Medium: "text-amber-400 border-amber-400/30 bg-amber-400/10",
-  Hard: "text-rose-400 border-rose-400/30 bg-rose-400/10",
-  Expert: "text-foreground border-foreground/30 bg-foreground/10",
+  Easy: "text-emerald-400 border-emerald-400/30",
+  Medium: "text-amber-400 border-amber-400/30",
+  Hard: "text-rose-400 border-rose-400/30",
+  Expert: "text-foreground border-foreground/30",
 };
 
-const difficultyDot: Record<string, string> = {
-  Easy: "bg-emerald-400",
-  Medium: "bg-amber-400",
-  Hard: "bg-rose-400",
-  Expert: "bg-foreground",
+const difficultyBg: Record<string, string> = {
+  Easy: "bg-emerald-400/10",
+  Medium: "bg-amber-400/10",
+  Hard: "bg-rose-400/10",
+  Expert: "bg-foreground/10",
 };
 
-// Challenge List Component
-function ChallengeList({ 
-  challenges, 
-  onSelect, 
-  selectedId,
-  totalPoints 
-}: { 
-  challenges: Challenge[]; 
-  onSelect: (c: Challenge) => void;
-  selectedId: number | null;
-  totalPoints: number;
-}) {
+function FloatingPaths({ position }: { position: number }) {
+  const paths = Array.from({ length: 36 }, (_, i) => ({
+    id: i,
+    d: `M-${380 - i * 5 * position} -${189 + i * 6}C-${
+      380 - i * 5 * position
+    } -${189 + i * 6} -${312 - i * 5 * position} ${216 - i * 6} ${
+      152 - i * 5 * position
+    } ${343 - i * 6}C${616 - i * 5 * position} ${470 - i * 6} ${
+      684 - i * 5 * position
+    } ${875 - i * 6} ${684 - i * 5 * position} ${875 - i * 6}`,
+    color: `rgba(255,255,255,${0.1 + i * 0.03})`,
+    width: 0.5 + i * 0.03,
+  }));
+
   return (
-    <div className="h-full flex flex-col bg-background">
-      {/* Header */}
-      <div className="p-4 border-b border-border">
-        <h2 className="font-heading font-bold text-lg">Challenges</h2>
-        <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
-          <span className="flex items-center gap-1">
-            <Star className="w-4 h-4 text-amber-400" />
-            {totalPoints.toLocaleString()} pts
-          </span>
-          <span className="flex items-center gap-1">
-            <Flame className="w-4 h-4 text-rose-400" />
-            7 day streak
-          </span>
-        </div>
-      </div>
-
-      {/* Challenge List */}
-      <div className="flex-1 overflow-y-auto">
-        {challenges.map((challenge) => (
-          <button
-            key={challenge.id}
-            onClick={() => challenge.status !== "locked" && onSelect(challenge)}
-            disabled={challenge.status === "locked"}
-            className={cn(
-              "w-full p-4 border-b border-border text-left transition-all hover:bg-muted/50",
-              selectedId === challenge.id && "bg-muted/80 border-l-2 border-l-foreground",
-              challenge.status === "locked" && "opacity-50 cursor-not-allowed"
-            )}
-          >
-            <div className="flex items-start justify-between gap-2">
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className={cn("w-2 h-2 rounded-full", difficultyDot[challenge.difficulty])} />
-                  <span className="text-xs text-muted-foreground">{challenge.difficulty}</span>
-                  {challenge.status === "completed" && (
-                    <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
-                  )}
-                  {challenge.featured && (
-                    <span className="text-xs px-1.5 py-0.5 rounded bg-foreground/10 text-foreground font-medium">Featured</span>
-                  )}
-                </div>
-                <p className="font-medium text-sm truncate">{challenge.title}</p>
-                <p className="text-xs text-muted-foreground mt-1 truncate">{challenge.description}</p>
-              </div>
-              <div className="text-right shrink-0">
-                <p className="text-xs text-amber-400 font-medium">{challenge.points} pts</p>
-                <p className="text-xs text-muted-foreground">{challenge.time}</p>
-              </div>
-            </div>
-          </button>
+    <div className="absolute inset-0 pointer-events-none">
+      <svg className="w-full h-full" viewBox="0 0 696 316" fill="none" aria-hidden="true">
+        <title>Background Paths</title>
+        {paths.map((path) => (
+          <motion.path
+            key={path.id}
+            d={path.d}
+            stroke={path.color}
+            strokeWidth={path.width}
+            strokeOpacity={0.1 + path.id * 0.02}
+            initial={{ pathLength: 0.3, opacity: 0.6 }}
+            animate={{
+              pathLength: 1,
+              opacity: [0.3, 0.6, 0.3],
+              pathOffset: [0, 1, 0],
+            }}
+            transition={{
+              duration: 20 + Math.random() * 10,
+              repeat: Infinity,
+              ease: "linear",
+            }}
+          />
         ))}
-      </div>
+      </svg>
     </div>
   );
 }
 
-// Challenge Workspace Component
+// LeetCode-style Workspace Component
 function ChallengeWorkspace({ 
   challenge, 
   onBack,
   onComplete 
 }: { 
-  challenge: Challenge | null;
+  challenge: Challenge;
   onBack: () => void;
   onComplete: (id: number, score: number) => void;
 }) {
@@ -236,7 +210,7 @@ function ChallengeWorkspace({
   const [copied, setCopied] = useState(false);
 
   const handleSubmit = () => {
-    if (!prompt.trim() || !challenge) return;
+    if (!prompt.trim()) return;
     setIsSubmitting(true);
     
     setTimeout(() => {
@@ -254,10 +228,8 @@ function ChallengeWorkspace({
   };
 
   const handleComplete = () => {
-    if (feedback && challenge) {
+    if (feedback) {
       onComplete(challenge.id, feedback.score);
-      setFeedback(null);
-      setPrompt("");
     }
   };
 
@@ -272,288 +244,446 @@ function ChallengeWorkspace({
     setTimeout(() => setCopied(false), 2000);
   };
 
-  if (!challenge) {
-    return (
-      <div className="h-full flex items-center justify-center bg-background text-muted-foreground">
-        <div className="text-center">
-          <Trophy className="w-12 h-12 mx-auto mb-4 opacity-30" />
-          <p className="text-lg font-medium">Select a challenge to begin</p>
-          <p className="text-sm mt-1">Choose from the list on the left</p>
+  return (
+    <div className="h-screen flex flex-col bg-background">
+      <Navbar />
+      
+      {/* Workspace Header */}
+      <div className="border-b border-border bg-card/50 backdrop-blur-sm px-4 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" size="sm" onClick={onBack} className="gap-1">
+            <ChevronLeft className="w-4 h-4" /> Back to Challenges
+          </Button>
+          <div className="h-4 w-px bg-border" />
+          <div className="flex items-center gap-2">
+            <span className={cn("px-2 py-0.5 rounded text-xs font-medium border", difficultyColors[challenge.difficulty], difficultyBg[challenge.difficulty])}>
+              {challenge.difficulty}
+            </span>
+            <h1 className="font-heading font-bold text-lg">{challenge.title}</h1>
+          </div>
+        </div>
+        <div className="flex items-center gap-3 text-sm text-muted-foreground">
+          <span className="flex items-center gap-1">
+            <Clock className="w-4 h-4" /> {challenge.time}
+          </span>
+          <span className="flex items-center gap-1 text-amber-400">
+            <Star className="w-4 h-4" /> {challenge.points} pts
+          </span>
         </div>
       </div>
-    );
-  }
 
-  return (
-    <div className="h-full flex flex-col bg-background">
-      <ResizablePanelGroup direction="horizontal" className="flex-1">
-        {/* Left Panel - Problem Description */}
-        <ResizablePanel defaultSize={45} minSize={30}>
-          <div className="h-full flex flex-col border-r border-border">
-            {/* Problem Header */}
-            <div className="p-4 border-b border-border">
-              <button 
-                onClick={onBack}
-                className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-3 md:hidden"
-              >
-                <ChevronLeft className="w-4 h-4" /> Back
-              </button>
-              <div className="flex items-center gap-2 mb-2">
-                <span className={cn("px-2 py-0.5 rounded text-xs font-medium", difficultyColors[challenge.difficulty])}>
-                  {challenge.difficulty}
-                </span>
-                <span className="text-xs text-muted-foreground flex items-center gap-1">
-                  <Clock className="w-3 h-3" /> {challenge.time}
-                </span>
-                <span className="text-xs text-amber-400 flex items-center gap-1">
-                  <Star className="w-3 h-3" /> {challenge.points} pts
-                </span>
-                <span className="text-xs text-muted-foreground flex items-center gap-1">
-                  <Users className="w-3 h-3" /> {challenge.participants.toLocaleString()}
-                </span>
-              </div>
-              <h1 className="text-xl font-heading font-bold">{challenge.title}</h1>
-            </div>
-
-            {/* Tabs */}
-            <div className="flex border-b border-border">
-              {(["description", "hints", "submissions"] as const).map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={cn(
-                    "px-4 py-2 text-sm font-medium capitalize transition-colors",
-                    activeTab === tab 
-                      ? "text-foreground border-b-2 border-foreground" 
-                      : "text-muted-foreground hover:text-foreground"
-                  )}
-                >
-                  {tab}
-                </button>
-              ))}
-            </div>
-
-            {/* Tab Content */}
-            <div className="flex-1 overflow-y-auto p-4">
-              <AnimatePresence mode="wait">
-                {activeTab === "description" && (
-                  <motion.div
-                    key="description"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="space-y-6"
-                  >
-                    <div>
-                      <h3 className="text-sm font-medium mb-2">Description</h3>
-                      <p className="text-sm text-muted-foreground leading-relaxed">{challenge.fullDescription}</p>
-                    </div>
-
-                    <div>
-                      <h3 className="text-sm font-medium mb-2">Examples</h3>
-                      <div className="space-y-3">
-                        {challenge.examples.map((ex, i) => (
-                          <div key={i} className="bg-muted/30 rounded-lg p-3 text-sm border border-border">
-                            <p className="text-muted-foreground mb-2">
-                              <span className="font-medium text-foreground">Input:</span> {ex.input}
-                            </p>
-                            <p className="text-muted-foreground">
-                              <span className="font-medium text-foreground">Expected:</span> {ex.output}
-                            </p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div>
-                      <h3 className="text-sm font-medium mb-2">Constraints</h3>
-                      <ul className="space-y-1">
-                        {challenge.constraints.map((c, i) => (
-                          <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
-                            <span className="text-foreground mt-1">•</span> {c}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </motion.div>
-                )}
-
-                {activeTab === "hints" && (
-                  <motion.div
-                    key="hints"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="space-y-3"
-                  >
-                    <p className="text-sm text-muted-foreground mb-4">
-                      Use hints sparingly - they may reduce your final score!
-                    </p>
-                    {challenge.hints.map((hint, i) => (
-                      <div key={i} className="flex items-start gap-3 bg-muted/30 rounded-lg p-3 border border-border">
-                        <Lightbulb className="w-4 h-4 text-amber-400 mt-0.5 shrink-0" />
-                        <p className="text-sm text-muted-foreground">{hint}</p>
-                      </div>
-                    ))}
-                  </motion.div>
-                )}
-
-                {activeTab === "submissions" && (
-                  <motion.div
-                    key="submissions"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                  >
-                    {challenge.score ? (
-                      <div className="bg-emerald-400/10 border border-emerald-400/30 rounded-lg p-4">
-                        <div className="flex items-center gap-2 mb-2">
-                          <CheckCircle className="w-5 h-5 text-emerald-400" />
-                          <span className="font-medium text-emerald-400">Completed</span>
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                          Best score: <span className="font-bold text-foreground">{challenge.score}/100</span>
-                        </p>
-                      </div>
-                    ) : (
-                      <p className="text-sm text-muted-foreground">No submissions yet. Write your solution and submit!</p>
+      {/* Main Workspace */}
+      <div className="flex-1 overflow-hidden">
+        <ResizablePanelGroup direction="horizontal" className="h-full">
+          {/* Left Panel - Problem Description */}
+          <ResizablePanel defaultSize={45} minSize={30}>
+            <div className="h-full flex flex-col">
+              {/* Tabs */}
+              <div className="flex border-b border-border bg-muted/30">
+                {(["description", "hints", "submissions"] as const).map((tab) => (
+                  <button
+                    key={tab}
+                    onClick={() => setActiveTab(tab)}
+                    className={cn(
+                      "px-4 py-3 text-sm font-medium capitalize transition-colors",
+                      activeTab === tab 
+                        ? "text-foreground border-b-2 border-foreground bg-background" 
+                        : "text-muted-foreground hover:text-foreground"
                     )}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          </div>
-        </ResizablePanel>
+                  >
+                    {tab}
+                  </button>
+                ))}
+              </div>
 
-        <ResizableHandle withHandle />
+              {/* Tab Content */}
+              <div className="flex-1 overflow-y-auto p-6">
+                <AnimatePresence mode="wait">
+                  {activeTab === "description" && (
+                    <motion.div
+                      key="description"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="space-y-6"
+                    >
+                      <div>
+                        <h3 className="text-sm font-medium text-foreground mb-3">Description</h3>
+                        <p className="text-sm text-muted-foreground leading-relaxed">{challenge.fullDescription}</p>
+                      </div>
 
-        {/* Right Panel - Editor */}
-        <ResizablePanel defaultSize={55} minSize={35}>
-          <div className="h-full flex flex-col">
-            {/* Editor Header */}
-            <div className="flex items-center justify-between p-3 border-b border-border bg-muted/30">
-              <span className="text-sm font-medium">Prompt Editor</span>
-              <div className="flex items-center gap-2">
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={handleCopy}
-                  disabled={!prompt}
-                  className="h-8"
-                >
-                  {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                </Button>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={handleReset}
-                  disabled={!prompt && !feedback}
-                  className="h-8"
-                >
-                  <RotateCcw className="w-4 h-4" />
-                </Button>
+                      <div>
+                        <h3 className="text-sm font-medium text-foreground mb-3">Examples</h3>
+                        <div className="space-y-3">
+                          {challenge.examples.map((ex, i) => (
+                            <div key={i} className="bg-muted/30 rounded-lg p-4 text-sm border border-border">
+                              <p className="text-muted-foreground mb-2">
+                                <span className="font-medium text-foreground">Input:</span> {ex.input}
+                              </p>
+                              <p className="text-muted-foreground">
+                                <span className="font-medium text-foreground">Expected:</span> {ex.output}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div>
+                        <h3 className="text-sm font-medium text-foreground mb-3">Constraints</h3>
+                        <ul className="space-y-2">
+                          {challenge.constraints.map((c, i) => (
+                            <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
+                              <span className="text-foreground mt-0.5">•</span> {c}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {activeTab === "hints" && (
+                    <motion.div
+                      key="hints"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="space-y-4"
+                    >
+                      <p className="text-sm text-muted-foreground">
+                        Use hints sparingly - they may affect your learning!
+                      </p>
+                      {challenge.hints.map((hint, i) => (
+                        <div key={i} className="flex items-start gap-3 bg-amber-400/5 border border-amber-400/20 rounded-lg p-4">
+                          <Lightbulb className="w-4 h-4 text-amber-400 mt-0.5 shrink-0" />
+                          <p className="text-sm text-muted-foreground">{hint}</p>
+                        </div>
+                      ))}
+                    </motion.div>
+                  )}
+
+                  {activeTab === "submissions" && (
+                    <motion.div
+                      key="submissions"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                    >
+                      {challenge.score ? (
+                        <div className="bg-emerald-400/10 border border-emerald-400/30 rounded-lg p-4">
+                          <div className="flex items-center gap-2 mb-2">
+                            <CheckCircle className="w-5 h-5 text-emerald-400" />
+                            <span className="font-medium text-emerald-400">Previously Completed</span>
+                          </div>
+                          <p className="text-sm text-muted-foreground">
+                            Best score: <span className="font-bold text-foreground">{challenge.score}/100</span>
+                          </p>
+                        </div>
+                      ) : (
+                        <p className="text-sm text-muted-foreground">No submissions yet. Write your solution and submit!</p>
+                      )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </div>
+          </ResizablePanel>
 
-            {/* Editor Area */}
-            <div className="flex-1 p-4">
-              <textarea
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                placeholder="Write your prompt solution here...
+          <ResizableHandle withHandle />
+
+          {/* Right Panel - Editor */}
+          <ResizablePanel defaultSize={55} minSize={35}>
+            <div className="h-full flex flex-col">
+              {/* Editor Header */}
+              <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-muted/30">
+                <span className="text-sm font-medium">Prompt Editor</span>
+                <div className="flex items-center gap-2">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={handleCopy}
+                    disabled={!prompt}
+                    className="h-8 gap-1"
+                  >
+                    {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                    <span className="hidden sm:inline">{copied ? "Copied" : "Copy"}</span>
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={handleReset}
+                    disabled={!prompt && !feedback}
+                    className="h-8 gap-1"
+                  >
+                    <RotateCcw className="w-4 h-4" />
+                    <span className="hidden sm:inline">Reset</span>
+                  </Button>
+                </div>
+              </div>
+
+              {/* Editor Area */}
+              <div className="flex-1 p-4 overflow-hidden">
+                <textarea
+                  value={prompt}
+                  onChange={(e) => setPrompt(e.target.value)}
+                  placeholder="Write your prompt solution here...
 
 Think about:
 • What role should the AI take?
 • What specific instructions does it need?
 • How should the output be formatted?
 • What edge cases should be handled?"
-                className="w-full h-full bg-muted/20 rounded-lg p-4 text-sm text-foreground placeholder:text-muted-foreground/60 resize-none focus:outline-none focus:ring-1 focus:ring-foreground/30 border border-border focus:border-foreground/20 font-mono"
-                disabled={!!feedback}
-              />
-            </div>
-
-            {/* Feedback Section */}
-            <AnimatePresence>
-              {feedback && (
-                <motion.div 
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 20 }}
-                  className="p-4 border-t border-border bg-muted/30"
-                >
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2">
-                      <CheckCircle className="w-5 h-5 text-emerald-400" />
-                      <span className="font-medium">Evaluation Complete</span>
-                    </div>
-                    <span className={cn(
-                      "text-2xl font-heading font-bold",
-                      feedback.score >= 90 ? "text-emerald-400" : feedback.score >= 80 ? "text-amber-400" : "text-foreground"
-                    )}>
-                      {feedback.score}/100
-                    </span>
-                  </div>
-                  <p className="text-sm text-muted-foreground mb-3">{feedback.message}</p>
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm">
-                      <Star className="w-4 h-4 inline mr-1 text-amber-400" />
-                      Earned: <span className="font-bold">{Math.floor(challenge.points * feedback.score / 100)}</span> points
-                    </p>
-                    <div className="flex gap-2">
-                      <Button variant="outline" size="sm" onClick={handleReset}>
-                        Try Again
-                      </Button>
-                      <Button size="sm" onClick={handleComplete}>
-                        Complete & Continue
-                      </Button>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {/* Submit Button */}
-            {!feedback && (
-              <div className="p-4 border-t border-border bg-muted/30 flex items-center justify-between">
-                <p className="text-xs text-muted-foreground">
-                  {prompt.length > 0 ? `${prompt.length} characters` : "Start typing your solution..."}
-                </p>
-                <Button 
-                  onClick={handleSubmit} 
-                  disabled={!prompt.trim() || isSubmitting}
-                  className="gap-2"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <div className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
-                      Evaluating...
-                    </>
-                  ) : (
-                    <>
-                      <Play className="w-4 h-4" />
-                      Run & Submit
-                    </>
-                  )}
-                </Button>
+                  className="w-full h-full bg-muted/20 rounded-lg p-4 text-sm text-foreground placeholder:text-muted-foreground/60 resize-none focus:outline-none focus:ring-1 focus:ring-foreground/30 border border-border focus:border-foreground/20 font-mono"
+                  disabled={!!feedback}
+                />
               </div>
-            )}
+
+              {/* Feedback Section */}
+              <AnimatePresence>
+                {feedback && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 20 }}
+                    className="p-4 border-t border-border bg-muted/30"
+                  >
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <CheckCircle className="w-5 h-5 text-emerald-400" />
+                        <span className="font-medium">Evaluation Complete</span>
+                      </div>
+                      <span className={cn(
+                        "text-2xl font-heading font-bold",
+                        feedback.score >= 90 ? "text-emerald-400" : feedback.score >= 80 ? "text-amber-400" : "text-foreground"
+                      )}>
+                        {feedback.score}/100
+                      </span>
+                    </div>
+                    <p className="text-sm text-muted-foreground mb-4">{feedback.message}</p>
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm">
+                        <Star className="w-4 h-4 inline mr-1 text-amber-400" />
+                        Earned: <span className="font-bold">{Math.floor(challenge.points * feedback.score / 100)}</span> points
+                      </p>
+                      <div className="flex gap-2">
+                        <Button variant="outline" size="sm" onClick={handleReset}>
+                          Try Again
+                        </Button>
+                        <Button size="sm" onClick={handleComplete}>
+                          Complete & Exit
+                        </Button>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Submit Button */}
+              {!feedback && (
+                <div className="p-4 border-t border-border bg-muted/30 flex items-center justify-between">
+                  <p className="text-xs text-muted-foreground">
+                    {prompt.length > 0 ? `${prompt.length} characters` : "Start typing your solution..."}
+                  </p>
+                  <Button 
+                    onClick={handleSubmit} 
+                    disabled={!prompt.trim() || isSubmitting}
+                    className="gap-2"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
+                        Evaluating...
+                      </>
+                    ) : (
+                      <>
+                        <Play className="w-4 h-4" />
+                        Run & Submit
+                      </>
+                    )}
+                  </Button>
+                </div>
+              )}
+            </div>
+          </ResizablePanel>
+        </ResizablePanelGroup>
+      </div>
+    </div>
+  );
+}
+
+// Original Challenges List View
+function ChallengesListView({ 
+  challenges, 
+  onSelectChallenge,
+  totalPoints,
+  stats
+}: { 
+  challenges: Challenge[];
+  onSelectChallenge: (c: Challenge) => void;
+  totalPoints: number;
+  stats: { icon: any; label: string; value: string }[];
+}) {
+  return (
+    <div className="min-h-screen bg-background">
+      <Navbar />
+      
+      {/* Hero Section */}
+      <section className="relative min-h-[50vh] flex items-center justify-center overflow-hidden pt-20">
+        <div className="absolute inset-0 bg-background">
+          <FloatingPaths position={1} />
+          <FloatingPaths position={-1} />
+        </div>
+        
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent z-10" />
+
+        <div className="container mx-auto px-4 relative z-20 text-center">
+          <motion.span 
+            className="text-muted-foreground text-sm font-medium tracking-widest uppercase mb-4 block"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            Compete & Conquer
+          </motion.span>
+          
+          <motion.h1 
+            className="text-4xl md:text-6xl font-heading font-bold mb-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+            Weekly <span className="text-foreground">Challenges</span>
+          </motion.h1>
+          
+          <motion.div 
+            className="h-px w-48 mx-auto mb-6 bg-gradient-to-r from-transparent via-foreground/30 to-transparent"
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ delay: 0.3, duration: 0.6 }}
+          />
+          
+          <motion.p 
+            className="text-muted-foreground max-w-xl mx-auto mb-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            Test your skills, compete with others, and climb the leaderboard.
+          </motion.p>
+
+          {/* Stats */}
+          <motion.div 
+            className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+          >
+            {stats.map((stat, i) => (
+              <motion.div 
+                key={i} 
+                className="glass rounded-xl border border-border/50 p-4 text-center"
+                whileHover={{ scale: 1.05 }}
+              >
+                <stat.icon className="w-5 h-5 text-foreground mx-auto mb-2" />
+                <p className="text-xl font-heading font-bold text-foreground">{stat.value}</p>
+                <p className="text-xs text-muted-foreground">{stat.label}</p>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Challenges List */}
+      <main className="py-16 relative z-20">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto space-y-4">
+            {challenges.map((challenge, index) => (
+              <motion.div
+                key={challenge.id}
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1, duration: 0.4 }}
+                whileHover={{ scale: challenge.status !== "locked" ? 1.01 : 1 }}
+                onClick={() => challenge.status !== "locked" && onSelectChallenge(challenge)}
+                className={cn(
+                  "group p-5 bg-card/80 backdrop-blur-sm border border-border rounded-xl transition-all duration-300 cursor-pointer",
+                  challenge.featured && "border-foreground/40 bg-foreground/5",
+                  challenge.status === "locked" && "opacity-50 cursor-not-allowed",
+                  challenge.status !== "locked" && "hover:border-foreground/30"
+                )}
+              >
+                <div className="flex items-start gap-4">
+                  {/* Challenge Number/Status */}
+                  <div className={cn(
+                    "w-12 h-12 rounded-xl flex items-center justify-center font-heading font-bold text-lg shrink-0",
+                    challenge.status === "completed" ? "bg-emerald-400/20 text-emerald-400" :
+                    challenge.status === "in-progress" ? "bg-amber-400/20 text-amber-400" :
+                    challenge.status === "locked" ? "bg-muted text-muted-foreground" :
+                    "bg-foreground/10 text-foreground"
+                  )}>
+                    {challenge.status === "completed" ? <CheckCircle className="w-5 h-5" /> :
+                     challenge.status === "locked" ? <Lock className="w-5 h-5" /> :
+                     `#${challenge.id}`}
+                  </div>
+
+                  {/* Content */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
+                      <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium border", difficultyColors[challenge.difficulty])}>
+                        {challenge.difficulty}
+                      </span>
+                      {challenge.featured && (
+                        <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-foreground text-background">
+                          Featured
+                        </span>
+                      )}
+                      {challenge.status === "completed" && challenge.score && (
+                        <span className="text-xs text-emerald-400">Score: {challenge.score}/100</span>
+                      )}
+                    </div>
+                    <h3 className="font-heading font-semibold text-foreground mb-1">{challenge.title}</h3>
+                    <p className="text-sm text-muted-foreground">{challenge.description}</p>
+                  </div>
+
+                  {/* Meta */}
+                  <div className="text-right shrink-0 hidden sm:block">
+                    <div className="flex items-center gap-1 text-amber-400 text-sm font-medium mb-1">
+                      <Star className="w-4 h-4" /> {challenge.points} pts
+                    </div>
+                    <div className="flex items-center gap-1 text-muted-foreground text-xs">
+                      <Clock className="w-3 h-3" /> {challenge.time}
+                    </div>
+                    <div className="flex items-center gap-1 text-muted-foreground text-xs mt-1">
+                      <Users className="w-3 h-3" /> {challenge.participants.toLocaleString()}
+                    </div>
+                  </div>
+
+                  {/* Arrow */}
+                  {challenge.status !== "locked" && (
+                    <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all shrink-0 self-center" />
+                  )}
+                </div>
+              </motion.div>
+            ))}
           </div>
-        </ResizablePanel>
-      </ResizablePanelGroup>
+        </div>
+      </main>
+
+      <Footer />
     </div>
   );
 }
 
 const Challenges = () => {
   const [challenges, setChallenges] = useState(challengesData);
-  const [selectedChallenge, setSelectedChallenge] = useState<Challenge | null>(null);
+  const [activeChallenge, setActiveChallenge] = useState<Challenge | null>(null);
   const [totalPoints, setTotalPoints] = useState(2450);
-  const [showMobileList, setShowMobileList] = useState(true);
 
-  const handleSelectChallenge = (challenge: Challenge) => {
-    setSelectedChallenge(challenge);
-    setShowMobileList(false);
-  };
+  const stats = [
+    { icon: Trophy, label: "Rank", value: "#127" },
+    { icon: Flame, label: "Streak", value: "7 days" },
+    { icon: Star, label: "Points", value: totalPoints.toLocaleString() },
+    { icon: Medal, label: "Badges", value: "12" },
+  ];
 
   const handleCompleteChallenge = (id: number, score: number) => {
     setChallenges(prev => prev.map(c => 
@@ -564,73 +694,28 @@ const Challenges = () => {
       const earnedPoints = Math.floor(challenge.points * score / 100);
       setTotalPoints(prev => prev + earnedPoints);
     }
+    setActiveChallenge(null);
   };
 
-  return (
-    <div className="h-screen flex flex-col bg-background">
-      <Navbar />
-      
-      {/* Main Content - Full Height Below Navbar */}
-      <div className="flex-1 flex overflow-hidden">
-        {/* Desktop: Side-by-side layout */}
-        <div className="hidden md:flex flex-1">
-          {/* Challenge List Sidebar */}
-          <div className="w-80 border-r border-border shrink-0">
-            <ChallengeList 
-              challenges={challenges} 
-              onSelect={handleSelectChallenge}
-              selectedId={selectedChallenge?.id || null}
-              totalPoints={totalPoints}
-            />
-          </div>
-          
-          {/* Workspace */}
-          <div className="flex-1">
-            <ChallengeWorkspace 
-              challenge={selectedChallenge}
-              onBack={() => setSelectedChallenge(null)}
-              onComplete={handleCompleteChallenge}
-            />
-          </div>
-        </div>
+  // Show workspace when a challenge is selected
+  if (activeChallenge) {
+    return (
+      <ChallengeWorkspace 
+        challenge={activeChallenge}
+        onBack={() => setActiveChallenge(null)}
+        onComplete={handleCompleteChallenge}
+      />
+    );
+  }
 
-        {/* Mobile: Toggle between list and workspace */}
-        <div className="flex md:hidden flex-1">
-          <AnimatePresence mode="wait">
-            {showMobileList ? (
-              <motion.div 
-                key="list"
-                initial={{ x: -20, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                exit={{ x: -20, opacity: 0 }}
-                className="w-full"
-              >
-                <ChallengeList 
-                  challenges={challenges} 
-                  onSelect={handleSelectChallenge}
-                  selectedId={selectedChallenge?.id || null}
-                  totalPoints={totalPoints}
-                />
-              </motion.div>
-            ) : (
-              <motion.div 
-                key="workspace"
-                initial={{ x: 20, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                exit={{ x: 20, opacity: 0 }}
-                className="w-full"
-              >
-                <ChallengeWorkspace 
-                  challenge={selectedChallenge}
-                  onBack={() => setShowMobileList(true)}
-                  onComplete={handleCompleteChallenge}
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      </div>
-    </div>
+  // Show the original challenges list
+  return (
+    <ChallengesListView 
+      challenges={challenges}
+      onSelectChallenge={setActiveChallenge}
+      totalPoints={totalPoints}
+      stats={stats}
+    />
   );
 };
 
