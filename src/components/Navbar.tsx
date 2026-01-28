@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Sparkles } from "lucide-react";
+import { Menu, X, Sparkles, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
 
 const navLinks = [
   { name: "Home", path: "/" },
@@ -10,13 +11,20 @@ const navLinks = [
   { name: "Practice", path: "/practice" },
   { name: "Library", path: "/library" },
   { name: "Challenges", path: "/challenges" },
-  { name: "Dashboard", path: "/dashboard" },
-  { name: "About", path: "/about" },
+  { name: "Refine", path: "/refine" },
+  { name: "DevTools", path: "/devtools" },
 ];
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
   const location = useLocation();
+  const { user, isAuthenticated, logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    setShowUserMenu(false);
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border">
@@ -27,8 +35,13 @@ export function Navbar() {
             to="/" 
             className="flex items-center gap-2.5 text-xl font-heading font-semibold transition-all duration-300 hover:opacity-80"
           >
-            <Sparkles className="w-6 h-6 text-foreground" />
-            <span className="text-foreground">PromptLab</span>
+            <img 
+              src="/logo.png" 
+              alt="Promptee" 
+              className="w-8 h-8"
+              style={{ filter: 'invert(1) brightness(2)' }}
+            />
+            <span className="text-foreground">Promptee</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -52,11 +65,59 @@ export function Navbar() {
             ))}
           </div>
 
-          {/* CTA Button */}
-          <div className="hidden lg:block">
-            <Button variant="default" size="sm">
-              Start Learning
-            </Button>
+          {/* Desktop Auth Section */}
+          <div className="hidden lg:flex items-center gap-3">
+            {isAuthenticated ? (
+              <div className="relative">
+                <button
+                  onClick={() => setShowUserMenu(!showUserMenu)}
+                  className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-foreground hover:bg-muted/50 transition-colors"
+                >
+                  <div className="w-8 h-8 rounded-full bg-foreground/10 flex items-center justify-center">
+                    <User className="w-4 h-4" />
+                  </div>
+                  <span className="hidden xl:inline">{user?.name}</span>
+                </button>
+
+                {/* User Dropdown */}
+                {showUserMenu && (
+                  <div className="absolute right-0 top-full mt-2 w-48 bg-card/95 backdrop-blur-sm border border-border/50 rounded-lg shadow-lg py-2 z-50">
+                    <div className="px-3 py-2 border-b border-border/30">
+                      <p className="text-sm font-medium">{user?.name}</p>
+                      <p className="text-xs text-muted-foreground">{user?.email}</p>
+                    </div>
+                    <Link
+                      to="/dashboard"
+                      className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-muted/50 transition-colors"
+                      onClick={() => setShowUserMenu(false)}
+                    >
+                      <User className="w-4 h-4" />
+                      Dashboard
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-400 hover:bg-red-500/10 transition-colors"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      Sign Out
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Link to="/login">
+                  <Button variant="ghost" size="sm">
+                    Sign In
+                  </Button>
+                </Link>
+                <Link to="/signup">
+                  <Button size="sm">
+                    Sign Up
+                  </Button>
+                </Link>
+              </div>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -92,14 +153,55 @@ export function Navbar() {
                 {link.name}
               </Link>
             ))}
-            <div className="pt-4 px-4">
-              <Button variant="default" className="w-full">
-                Start Learning
-              </Button>
+            
+            {/* Mobile Auth Section */}
+            <div className="pt-4 px-4 border-t border-border/30 mt-2">
+              {isAuthenticated ? (
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 px-3 py-2 bg-muted/30 rounded-lg">
+                    <div className="w-8 h-8 rounded-full bg-foreground/10 flex items-center justify-center">
+                      <User className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium">{user?.name}</p>
+                      <p className="text-xs text-muted-foreground">{user?.email}</p>
+                    </div>
+                  </div>
+                  <Button
+                    variant="outline"
+                    className="w-full gap-2"
+                    onClick={handleLogout}
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Sign Out
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <Link to="/login" className="block">
+                    <Button variant="ghost" className="w-full">
+                      Sign In
+                    </Button>
+                  </Link>
+                  <Link to="/signup" className="block">
+                    <Button className="w-full">
+                      Sign Up
+                    </Button>
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
         </div>
       </div>
+
+      {/* Click outside to close user menu */}
+      {showUserMenu && (
+        <div
+          className="fixed inset-0 z-40"
+          onClick={() => setShowUserMenu(false)}
+        />
+      )}
     </nav>
   );
 }

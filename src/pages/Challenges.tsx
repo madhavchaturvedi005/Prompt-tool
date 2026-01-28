@@ -1,11 +1,16 @@
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
-import { Trophy, Clock, Star, Users, Flame, Medal, Target, Lock, ChevronLeft, Send, CheckCircle, Lightbulb, Play, RotateCcw, Copy, Check, ArrowRight } from "lucide-react";
+import { AuthPrompt } from "@/components/AuthPrompt";
+import { Trophy, Clock, Star, Users, Flame, Medal, ChevronLeft, CheckCircle, Lightbulb, Play, RotateCcw, Copy, Check, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ProgressBar } from "@/components/ui/progress-bar";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
+import { challenges as challengesFromSchema } from "@/lib/challengesData";
+import { evaluatePrompt } from "@/lib/challengeEvaluator";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface Challenge {
   id: number;
@@ -16,138 +21,52 @@ interface Challenge {
   time: string;
   points: number;
   participants: number;
-  status: "completed" | "in-progress" | "available" | "locked";
+  status: "completed" | "available";
   score: number | null;
+  criteriaScores?: Record<string, number>;
   featured?: boolean;
   hints: string[];
   examples: { input: string; output: string }[];
   constraints: string[];
+  evaluationCriteria: Array<{
+    name: string;
+    weight: number;
+    description: string;
+  }>;
 }
 
-const challengesData: Challenge[] = [
-  {
-    id: 1,
-    title: "Email Assistant Challenge",
-    description: "Create a prompt that helps draft professional emails from bullet points.",
-    fullDescription: "Your task is to create a prompt that takes a list of bullet points and transforms them into a well-structured, professional email. The prompt should handle different email types (formal, informal, follow-up) and maintain appropriate tone throughout the message.",
-    difficulty: "Easy",
-    time: "15 min",
-    points: 100,
-    participants: 1234,
-    status: "completed",
-    score: 95,
-    hints: ["Consider specifying the email tone", "Include instructions for greeting and sign-off", "Handle edge cases like empty bullet points"],
-    examples: [
-      { input: "Bullet points: Meeting tomorrow, 2pm, Conference Room B", output: "A professional email scheduling the meeting with all details" },
-      { input: "Bullet points: Thank client, Great presentation, Follow up next week", output: "A grateful follow-up email with clear next steps" }
-    ],
-    constraints: ["Must handle 3+ email types", "Output should be ready to send", "Maintain professional tone"]
-  },
-  {
-    id: 2,
-    title: "Code Debugger Pro",
-    description: "Design a prompt that identifies bugs and suggests fixes across languages.",
-    fullDescription: "Create a prompt that can analyze code snippets, identify potential bugs, explain why they're problematic, and suggest fixes. Your prompt should work across multiple programming languages including Python, JavaScript, and TypeScript.",
-    difficulty: "Medium",
-    time: "25 min",
-    points: 250,
-    participants: 856,
-    status: "in-progress",
-    score: null,
-    hints: ["Ask for step-by-step analysis", "Request explanations for each bug found", "Include language-specific considerations"],
-    examples: [
-      { input: "function add(a, b) { return a + b }", output: "Analysis: Missing type safety, potential NaN issues..." },
-      { input: "for i in range(len(list)):", output: "Suggestion: Use enumerate() for cleaner iteration..." }
-    ],
-    constraints: ["Support 3+ programming languages", "Explain severity of each bug", "Provide working fix"]
-  },
-  {
-    id: 3,
-    title: "Creative Story Generator",
-    description: "Build a prompt system that creates engaging short stories with themes.",
-    fullDescription: "Design a prompt that generates creative short stories based on given themes, characters, and settings. The stories should have proper structure with a compelling beginning, engaging middle, and satisfying end.",
-    difficulty: "Medium",
-    time: "30 min",
-    points: 300,
-    participants: 2103,
-    status: "available",
-    score: null,
-    hints: ["Define story structure requirements", "Include character development guidelines", "Specify word count or length"],
-    examples: [
-      { input: "Theme: Redemption, Setting: Space station", output: "A story about a former criminal finding purpose..." },
-      { input: "Theme: First love, Setting: 1920s Paris", output: "A romantic tale set in the Jazz Age..." }
-    ],
-    constraints: ["300-500 words", "Must include dialogue", "Clear narrative arc"]
-  },
-  {
-    id: 4,
-    title: "Data Analyst Bot",
-    description: "Craft a prompt that analyzes datasets and provides actionable insights.",
-    fullDescription: "Create a prompt that can take data in various formats (CSV, JSON, tables), analyze patterns and trends, and provide actionable insights with clear explanations. Include visualization suggestions where appropriate.",
-    difficulty: "Hard",
-    time: "45 min",
-    points: 500,
-    participants: 421,
-    status: "available",
-    score: null,
-    hints: ["Handle different data formats", "Request statistical analysis", "Ask for visualization recommendations"],
-    examples: [
-      { input: "Sales data with monthly figures", output: "Trend analysis with growth predictions..." },
-      { input: "User engagement metrics", output: "Insights on peak usage times and recommendations..." }
-    ],
-    constraints: ["Support CSV/JSON input", "Include confidence levels", "Suggest visualizations"]
-  },
-  {
-    id: 5,
-    title: "Multi-Turn Conversation",
-    description: "Create a prompt that maintains context across multiple conversation turns.",
-    fullDescription: "Design a system prompt that maintains context and memory across multiple conversation turns, providing coherent and contextually aware responses throughout a dialogue while maintaining consistent personality.",
-    difficulty: "Hard",
-    time: "40 min",
-    points: 450,
-    participants: 312,
-    status: "locked",
-    score: null,
-    hints: ["Define memory management", "Handle context switching", "Maintain personality consistency"],
-    examples: [
-      { input: "User mentions their name early in conversation", output: "AI uses name naturally throughout..." },
-      { input: "User references earlier topic", output: "AI connects current and past context..." }
-    ],
-    constraints: ["Track 5+ conversation turns", "Handle topic changes", "Remember user preferences"]
-  },
-  {
-    id: 6,
-    title: "Weekly Boss Challenge",
-    description: "The ultimate test: Create an AI tutor that teaches any subject adaptively.",
-    fullDescription: "Create an adaptive AI tutor prompt that can teach any subject, adjust to the learner's level, provide examples, quiz the student, and track progress. This is the ultimate prompt engineering challenge requiring mastery of all techniques!",
-    difficulty: "Expert",
-    time: "60 min",
-    points: 1000,
-    participants: 89,
-    status: "available",
-    featured: true,
-    score: null,
-    hints: ["Implement adaptive difficulty", "Include assessment mechanisms", "Design feedback loops"],
-    examples: [
-      { input: "Student struggles with fractions", output: "Tutor simplifies explanation, uses visual examples..." },
-      { input: "Advanced student asks complex question", output: "Tutor provides in-depth analysis with challenges..." }
-    ],
-    constraints: ["Adaptive difficulty", "Include quizzes", "Track progress metrics"]
-  },
-];
+// Convert JSON schema challenges to the format expected by the component (remove locked status)
+const challengesData: Challenge[] = challengesFromSchema.map((challenge, index) => ({
+  id: index + 1,
+  title: challenge.title,
+  description: challenge.description,
+  fullDescription: challenge.objectives.join(". ") + ".",
+  difficulty: challenge.difficulty.charAt(0).toUpperCase() + challenge.difficulty.slice(1),
+  time: challenge.estimatedTime,
+  points: challenge.points,
+  participants: challenge.participants,
+  status: "available", // All challenges are available
+  score: null, // No pre-completed challenges
+  featured: challenge.featured,
+  hints: challenge.hints,
+  examples: challenge.testCases.map(tc => ({
+    input: tc.input,
+    output: tc.expectedElements.join(", ")
+  })),
+  constraints: challenge.requirements.constraints,
+  evaluationCriteria: challenge.evaluation.criteria
+}));
 
 const difficultyColors: Record<string, string> = {
-  Easy: "text-emerald-400 border-emerald-400/30",
-  Medium: "text-amber-400 border-amber-400/30",
-  Hard: "text-rose-400 border-rose-400/30",
-  Expert: "text-foreground border-foreground/30",
+  Beginner: "text-emerald-400 border-emerald-400/30",
+  Intermediate: "text-amber-400 border-amber-400/30",
+  Advanced: "text-rose-400 border-rose-400/30",
 };
 
 const difficultyBg: Record<string, string> = {
-  Easy: "bg-emerald-400/10",
-  Medium: "bg-amber-400/10",
-  Hard: "bg-rose-400/10",
-  Expert: "bg-foreground/10",
+  Beginner: "bg-emerald-400/10",
+  Intermediate: "bg-amber-400/10",
+  Advanced: "bg-rose-400/10",
 };
 
 function FloatingPaths({ position }: { position: number }) {
@@ -193,7 +112,7 @@ function FloatingPaths({ position }: { position: number }) {
   );
 }
 
-// LeetCode-style Workspace Component
+// Enhanced Workspace Component with OpenAI Evaluation
 function ChallengeWorkspace({ 
   challenge, 
   onBack,
@@ -201,35 +120,46 @@ function ChallengeWorkspace({
 }: { 
   challenge: Challenge;
   onBack: () => void;
-  onComplete: (id: number, score: number) => void;
+  onComplete: (id: number, score: number, criteriaScores: Record<string, number>) => void;
 }) {
   const [prompt, setPrompt] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [feedback, setFeedback] = useState<{ score: number; message: string } | null>(null);
+  const [feedback, setFeedback] = useState<{
+    overallScore: number;
+    criteriaScores: Record<string, number>;
+    feedback: string;
+    suggestions: string[];
+  } | null>(null);
   const [activeTab, setActiveTab] = useState<"description" | "hints" | "submissions">("description");
   const [copied, setCopied] = useState(false);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!prompt.trim()) return;
     setIsSubmitting(true);
     
-    setTimeout(() => {
-      const score = Math.floor(Math.random() * 30) + 70;
+    try {
+      const result = await evaluatePrompt(prompt, challenge.id.toString(), challenge.evaluationCriteria);
+      setFeedback(result);
+    } catch (error) {
+      console.error('Evaluation failed:', error);
+      // Fallback evaluation
       setFeedback({
-        score,
-        message: score >= 90 
-          ? "Excellent work! Your prompt demonstrates clear understanding of the requirements and handles edge cases well."
-          : score >= 80
-          ? "Great job! Your prompt covers the main requirements. Consider adding more specificity for edge cases."
-          : "Good attempt! Your prompt addresses the basic requirements. Try being more specific about output format and handling edge cases."
+        overallScore: 75,
+        criteriaScores: challenge.evaluationCriteria.reduce((acc, c) => {
+          acc[c.name] = Math.floor(Math.random() * 3) + 6;
+          return acc;
+        }, {} as Record<string, number>),
+        feedback: "Evaluation service temporarily unavailable. This is an estimated score.",
+        suggestions: ["Try to be more specific in your instructions", "Consider adding examples", "Think about edge cases"]
       });
+    } finally {
       setIsSubmitting(false);
-    }, 2000);
+    }
   };
 
   const handleComplete = () => {
     if (feedback) {
-      onComplete(challenge.id, feedback.score);
+      onComplete(challenge.id, feedback.overallScore, feedback.criteriaScores);
     }
   };
 
@@ -338,6 +268,21 @@ function ChallengeWorkspace({
                           ))}
                         </ul>
                       </div>
+
+                      <div>
+                        <h3 className="text-sm font-medium text-foreground mb-3">Evaluation Criteria</h3>
+                        <div className="space-y-2">
+                          {challenge.evaluationCriteria.map((criterion, i) => (
+                            <div key={i} className="bg-muted/20 rounded-lg p-3 border border-border">
+                              <div className="flex items-center justify-between mb-1">
+                                <span className="text-sm font-medium text-foreground">{criterion.name}</span>
+                                <span className="text-xs text-muted-foreground">{criterion.weight}%</span>
+                              </div>
+                              <p className="text-xs text-muted-foreground">{criterion.description}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
                     </motion.div>
                   )}
 
@@ -369,14 +314,31 @@ function ChallengeWorkspace({
                       exit={{ opacity: 0 }}
                     >
                       {challenge.score ? (
-                        <div className="bg-emerald-400/10 border border-emerald-400/30 rounded-lg p-4">
-                          <div className="flex items-center gap-2 mb-2">
-                            <CheckCircle className="w-5 h-5 text-emerald-400" />
-                            <span className="font-medium text-emerald-400">Previously Completed</span>
+                        <div className="space-y-4">
+                          <div className="bg-emerald-400/10 border border-emerald-400/30 rounded-lg p-4">
+                            <div className="flex items-center gap-2 mb-2">
+                              <CheckCircle className="w-5 h-5 text-emerald-400" />
+                              <span className="font-medium text-emerald-400">Previously Completed</span>
+                            </div>
+                            <p className="text-sm text-muted-foreground">
+                              Best score: <span className="font-bold text-foreground">{challenge.score}/100</span>
+                            </p>
                           </div>
-                          <p className="text-sm text-muted-foreground">
-                            Best score: <span className="font-bold text-foreground">{challenge.score}/100</span>
-                          </p>
+                          
+                          {challenge.criteriaScores && (
+                            <div className="space-y-3">
+                              <h4 className="text-sm font-medium text-foreground">Detailed Scores</h4>
+                              {Object.entries(challenge.criteriaScores).map(([criterion, score]) => (
+                                <ProgressBar
+                                  key={criterion}
+                                  label={criterion}
+                                  value={score}
+                                  max={10}
+                                  className="text-xs"
+                                />
+                              ))}
+                            </div>
+                          )}
                         </div>
                       ) : (
                         <p className="text-sm text-muted-foreground">No submissions yet. Write your solution and submit!</p>
@@ -444,33 +406,72 @@ Think about:
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 20 }}
-                    className="p-4 border-t border-border bg-muted/30"
+                    className="p-4 border-t border-border bg-muted/30 max-h-96 overflow-y-auto"
                   >
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-2">
-                        <CheckCircle className="w-5 h-5 text-emerald-400" />
-                        <span className="font-medium">Evaluation Complete</span>
+                    <div className="space-y-4">
+                      {/* Overall Score */}
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="w-5 h-5 text-emerald-400" />
+                          <span className="font-medium">Evaluation Complete</span>
+                        </div>
+                        <span className={cn(
+                          "text-2xl font-heading font-bold",
+                          feedback.overallScore >= 90 ? "text-emerald-400" : 
+                          feedback.overallScore >= 80 ? "text-amber-400" : "text-foreground"
+                        )}>
+                          {feedback.overallScore}/100
+                        </span>
                       </div>
-                      <span className={cn(
-                        "text-2xl font-heading font-bold",
-                        feedback.score >= 90 ? "text-emerald-400" : feedback.score >= 80 ? "text-amber-400" : "text-foreground"
-                      )}>
-                        {feedback.score}/100
-                      </span>
-                    </div>
-                    <p className="text-sm text-muted-foreground mb-4">{feedback.message}</p>
-                    <div className="flex items-center justify-between">
-                      <p className="text-sm">
-                        <Star className="w-4 h-4 inline mr-1 text-amber-400" />
-                        Earned: <span className="font-bold">{Math.floor(challenge.points * feedback.score / 100)}</span> points
-                      </p>
-                      <div className="flex gap-2">
-                        <Button variant="outline" size="sm" onClick={handleReset}>
-                          Try Again
-                        </Button>
-                        <Button size="sm" onClick={handleComplete}>
-                          Complete & Exit
-                        </Button>
+
+                      {/* Criteria Scores */}
+                      <div className="space-y-3">
+                        <h4 className="text-sm font-medium text-foreground">Detailed Evaluation</h4>
+                        {Object.entries(feedback.criteriaScores).map(([criterion, score]) => (
+                          <ProgressBar
+                            key={criterion}
+                            label={criterion}
+                            value={score}
+                            max={10}
+                            className="text-xs"
+                          />
+                        ))}
+                      </div>
+
+                      {/* Feedback */}
+                      <div>
+                        <h4 className="text-sm font-medium text-foreground mb-2">Feedback</h4>
+                        <p className="text-sm text-muted-foreground">{feedback.feedback}</p>
+                      </div>
+
+                      {/* Suggestions */}
+                      {feedback.suggestions.length > 0 && (
+                        <div>
+                          <h4 className="text-sm font-medium text-foreground mb-2">Suggestions</h4>
+                          <ul className="space-y-1">
+                            {feedback.suggestions.map((suggestion, i) => (
+                              <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
+                                <span className="text-foreground mt-0.5">•</span> {suggestion}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      {/* Actions */}
+                      <div className="flex items-center justify-between pt-2 border-t border-border">
+                        <p className="text-sm">
+                          <Star className="w-4 h-4 inline mr-1 text-amber-400" />
+                          Earned: <span className="font-bold">{Math.floor(challenge.points * feedback.overallScore / 100)}</span> points
+                        </p>
+                        <div className="flex gap-2">
+                          <Button variant="outline" size="sm" onClick={handleReset}>
+                            Try Again
+                          </Button>
+                          <Button size="sm" onClick={handleComplete}>
+                            Complete & Exit
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   </motion.div>
@@ -491,12 +492,12 @@ Think about:
                     {isSubmitting ? (
                       <>
                         <div className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
-                        Evaluating...
+                        Evaluating with AI...
                       </>
                     ) : (
                       <>
                         <Play className="w-4 h-4" />
-                        Run & Submit
+                        Evaluate with AI
                       </>
                     )}
                   </Button>
@@ -510,18 +511,25 @@ Think about:
   );
 }
 
-// Original Challenges List View
+// Challenges List View
 function ChallengesListView({ 
   challenges, 
   onSelectChallenge,
   totalPoints,
-  stats
+  completedChallenges
 }: { 
   challenges: Challenge[];
   onSelectChallenge: (c: Challenge) => void;
   totalPoints: number;
-  stats: { icon: any; label: string; value: string }[];
+  completedChallenges: number;
 }) {
+  const stats = [
+    { icon: Trophy, label: "Completed", value: completedChallenges.toString() },
+    { icon: Star, label: "Points", value: totalPoints.toLocaleString() },
+    { icon: Users, label: "Total Challenges", value: challenges.length.toString() },
+    { icon: Flame, label: "Available", value: (challenges.length - completedChallenges).toString() },
+  ];
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -541,7 +549,7 @@ function ChallengesListView({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            Compete & Conquer
+            AI-Powered Evaluation
           </motion.span>
           
           <motion.h1 
@@ -566,7 +574,7 @@ function ChallengesListView({
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
           >
-            Test your skills, compete with others, and climb the leaderboard.
+            Test your prompt engineering skills with AI-powered evaluation and detailed feedback.
           </motion.p>
 
           {/* Stats */}
@@ -602,13 +610,12 @@ function ChallengesListView({
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1, duration: 0.4 }}
-                whileHover={{ scale: challenge.status !== "locked" ? 1.01 : 1 }}
-                onClick={() => challenge.status !== "locked" && onSelectChallenge(challenge)}
+                whileHover={{ scale: 1.01 }}
+                onClick={() => onSelectChallenge(challenge)}
                 className={cn(
                   "group p-5 bg-card/80 backdrop-blur-sm border border-border rounded-xl transition-all duration-300 cursor-pointer",
                   challenge.featured && "border-foreground/40 bg-foreground/5",
-                  challenge.status === "locked" && "opacity-50 cursor-not-allowed",
-                  challenge.status !== "locked" && "hover:border-foreground/30"
+                  "hover:border-foreground/30"
                 )}
               >
                 <div className="flex items-start gap-4">
@@ -616,13 +623,9 @@ function ChallengesListView({
                   <div className={cn(
                     "w-12 h-12 rounded-xl flex items-center justify-center font-heading font-bold text-lg shrink-0",
                     challenge.status === "completed" ? "bg-emerald-400/20 text-emerald-400" :
-                    challenge.status === "in-progress" ? "bg-amber-400/20 text-amber-400" :
-                    challenge.status === "locked" ? "bg-muted text-muted-foreground" :
                     "bg-foreground/10 text-foreground"
                   )}>
-                    {challenge.status === "completed" ? <CheckCircle className="w-5 h-5" /> :
-                     challenge.status === "locked" ? <Lock className="w-5 h-5" /> :
-                     `#${challenge.id}`}
+                    {challenge.status === "completed" ? <CheckCircle className="w-5 h-5" /> : `#${challenge.id}`}
                   </div>
 
                   {/* Content */}
@@ -658,9 +661,7 @@ function ChallengesListView({
                   </div>
 
                   {/* Arrow */}
-                  {challenge.status !== "locked" && (
-                    <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all shrink-0 self-center" />
-                  )}
+                  <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all shrink-0 self-center" />
                 </div>
               </motion.div>
             ))}
@@ -674,28 +675,282 @@ function ChallengesListView({
 }
 
 const Challenges = () => {
+  const { isAuthenticated } = useAuth();
   const [challenges, setChallenges] = useState(challengesData);
   const [activeChallenge, setActiveChallenge] = useState<Challenge | null>(null);
-  const [totalPoints, setTotalPoints] = useState(2450);
+  
+  // Calculate stats from actual challenge data
+  const completedChallenges = challenges.filter(c => c.status === "completed").length;
+  const totalPoints = challenges
+    .filter(c => c.status === "completed" && c.score)
+    .reduce((sum, c) => sum + Math.floor(c.points * (c.score || 0) / 100), 0);
 
-  const stats = [
-    { icon: Trophy, label: "Rank", value: "#127" },
-    { icon: Flame, label: "Streak", value: "7 days" },
-    { icon: Star, label: "Points", value: totalPoints.toLocaleString() },
-    { icon: Medal, label: "Badges", value: "12" },
-  ];
-
-  const handleCompleteChallenge = (id: number, score: number) => {
+  const handleCompleteChallenge = (id: number, score: number, criteriaScores: Record<string, number>) => {
     setChallenges(prev => prev.map(c => 
-      c.id === id ? { ...c, status: "completed" as const, score } : c
+      c.id === id ? { ...c, status: "completed" as const, score, criteriaScores } : c
     ));
-    const challenge = challenges.find(c => c.id === id);
-    if (challenge) {
-      const earnedPoints = Math.floor(challenge.points * score / 100);
-      setTotalPoints(prev => prev + earnedPoints);
-    }
     setActiveChallenge(null);
   };
+
+  // Show auth prompt for unauthenticated users
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-background relative overflow-hidden">
+        <Navbar />
+        
+        {/* Blurred Background Content - Only the main content, not navbar */}
+        <div className="relative">
+          <div className="blur-md pointer-events-none select-none">
+            {/* Hero Section */}
+            <section className="relative min-h-[50vh] flex items-center justify-center overflow-hidden pt-20">
+              <div className="absolute inset-0 bg-background">
+                <FloatingPaths position={1} />
+                <FloatingPaths position={-1} />
+              </div>
+              
+              <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent z-10" />
+
+              <div className="container mx-auto px-4 relative z-20 text-center">
+                <motion.span 
+                  className="text-muted-foreground text-sm font-medium tracking-widest uppercase mb-4 block"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                >
+                  AI-Powered Evaluation
+                </motion.span>
+                
+                <motion.h1 
+                  className="text-4xl md:text-6xl font-heading font-bold mb-4"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 }}
+                >
+                  Weekly <span className="text-foreground">Challenges</span>
+                </motion.h1>
+                
+                <motion.div 
+                  className="h-px w-48 mx-auto mb-6 bg-gradient-to-r from-transparent via-foreground/30 to-transparent"
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  transition={{ delay: 0.3, duration: 0.6 }}
+                />
+                
+                <motion.p 
+                  className="text-muted-foreground max-w-xl mx-auto mb-8"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                >
+                  Test your prompt engineering skills with AI-powered evaluation and detailed feedback.
+                </motion.p>
+
+                {/* Stats */}
+                <motion.div 
+                  className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 }}
+                >
+                  {[
+                    { icon: Trophy, label: "Completed", value: completedChallenges.toString() },
+                    { icon: Star, label: "Points", value: totalPoints.toLocaleString() },
+                    { icon: Users, label: "Total Challenges", value: challenges.length.toString() },
+                    { icon: Flame, label: "Available", value: (challenges.length - completedChallenges).toString() },
+                  ].map((stat, i) => (
+                    <motion.div 
+                      key={i} 
+                      className="glass rounded-xl border border-border/50 p-4 text-center"
+                      whileHover={{ scale: 1.05 }}
+                    >
+                      <stat.icon className="w-5 h-5 text-foreground mx-auto mb-2" />
+                      <p className="text-xl font-heading font-bold text-foreground">{stat.value}</p>
+                      <p className="text-xs text-muted-foreground">{stat.label}</p>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              </div>
+            </section>
+
+            {/* Challenges List */}
+            <main className="py-16 relative z-20">
+              <div className="container mx-auto px-4">
+                <div className="max-w-4xl mx-auto space-y-4">
+                  {challenges.map((challenge, index) => (
+                    <motion.div
+                      key={challenge.id}
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: index * 0.1, duration: 0.4 }}
+                      whileHover={{ scale: 1.01 }}
+                      className={cn(
+                        "group p-5 bg-card/80 backdrop-blur-sm border border-border rounded-xl transition-all duration-300 cursor-pointer",
+                        challenge.featured && "border-foreground/40 bg-foreground/5",
+                        "hover:border-foreground/30"
+                      )}
+                    >
+                      <div className="flex items-start gap-4">
+                        {/* Challenge Number/Status */}
+                        <div className={cn(
+                          "w-12 h-12 rounded-xl flex items-center justify-center font-heading font-bold text-lg shrink-0",
+                          challenge.status === "completed" ? "bg-emerald-400/20 text-emerald-400" :
+                          "bg-foreground/10 text-foreground"
+                        )}>
+                          {challenge.status === "completed" ? <CheckCircle className="w-5 h-5" /> : `#${challenge.id}`}
+                        </div>
+
+                        {/* Content */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1 flex-wrap">
+                            <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium border", difficultyColors[challenge.difficulty])}>
+                              {challenge.difficulty}
+                            </span>
+                            {challenge.featured && (
+                              <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-foreground text-background">
+                                Featured
+                              </span>
+                            )}
+                            {challenge.status === "completed" && challenge.score && (
+                              <span className="text-xs text-emerald-400">Score: {challenge.score}/100</span>
+                            )}
+                          </div>
+                          <h3 className="font-heading font-semibold text-foreground mb-1">{challenge.title}</h3>
+                          <p className="text-sm text-muted-foreground">{challenge.description}</p>
+                        </div>
+
+                        {/* Meta */}
+                        <div className="text-right shrink-0 hidden sm:block">
+                          <div className="flex items-center gap-1 text-amber-400 text-sm font-medium mb-1">
+                            <Star className="w-4 h-4" /> {challenge.points} pts
+                          </div>
+                          <div className="flex items-center gap-1 text-muted-foreground text-xs">
+                            <Clock className="w-3 h-3" /> {challenge.time}
+                          </div>
+                          <div className="flex items-center gap-1 text-muted-foreground text-xs mt-1">
+                            <Users className="w-3 h-3" /> {challenge.participants.toLocaleString()}
+                          </div>
+                        </div>
+
+                        {/* Arrow */}
+                        <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all shrink-0 self-center" />
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </main>
+          </div>
+          
+          {/* Enhanced Auth Prompt Overlay */}
+          <div className="absolute inset-0 bg-background/60 backdrop-blur-sm flex items-center justify-center z-50" style={{ top: '64px' }}>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              className="bg-card/95 backdrop-blur-md border border-border/50 rounded-3xl p-8 max-w-lg mx-4 text-center shadow-2xl"
+            >
+              {/* Animated Icon */}
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.2, duration: 0.5, type: "spring", bounce: 0.4 }}
+                className="w-20 h-20 rounded-3xl bg-gradient-to-br from-foreground/20 to-foreground/10 flex items-center justify-center mx-auto mb-6 relative overflow-hidden"
+              >
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-foreground/10 to-transparent"
+                />
+                <Trophy className="w-10 h-10 text-foreground relative z-10" />
+              </motion.div>
+
+              {/* Content */}
+              <motion.h2 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="text-3xl font-heading font-bold mb-4 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent"
+              >
+                Unlock Weekly Challenges
+              </motion.h2>
+              
+              <motion.p 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="text-muted-foreground mb-8 leading-relaxed text-lg"
+              >
+                Join thousands of developers mastering prompt engineering through hands-on challenges with AI-powered evaluation.
+              </motion.p>
+
+              {/* Features List */}
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className="grid grid-cols-2 gap-4 mb-8 text-sm"
+              >
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <div className="w-2 h-2 rounded-full bg-emerald-400" />
+                  <span>AI Evaluation</span>
+                </div>
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <div className="w-2 h-2 rounded-full bg-blue-400" />
+                  <span>Progress Tracking</span>
+                </div>
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <div className="w-2 h-2 rounded-full bg-purple-400" />
+                  <span>Skill Building</span>
+                </div>
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <div className="w-2 h-2 rounded-full bg-amber-400" />
+                  <span>Earn Points</span>
+                </div>
+              </motion.div>
+
+              {/* Action Buttons */}
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6 }}
+                className="space-y-3"
+              >
+                <Button 
+                  onClick={() => window.location.href = '/signup'}
+                  className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-foreground to-foreground/90 hover:from-foreground/90 hover:to-foreground/80 transition-all duration-300 shadow-lg hover:shadow-xl"
+                >
+                  <Trophy className="w-5 h-5 mr-2" />
+                  Start Your Journey
+                </Button>
+                
+                <Button 
+                  variant="outline" 
+                  onClick={() => window.location.href = '/login'}
+                  className="w-full h-12 border-2 border-foreground/20 hover:border-foreground/40 hover:bg-foreground/5 transition-all duration-300"
+                >
+                  Already have an account? Sign In
+                </Button>
+              </motion.div>
+
+              {/* Footer */}
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.8 }}
+                className="mt-8 pt-6 border-t border-border/30"
+              >
+                <p className="text-xs text-muted-foreground/70">
+                  Free to join • No credit card required • Start learning immediately
+                </p>
+              </motion.div>
+            </motion.div>
+          </div>
+        </div>
+        
+        <Footer />
+      </div>
+    );
+  }
 
   // Show workspace when a challenge is selected
   if (activeChallenge) {
@@ -708,13 +963,13 @@ const Challenges = () => {
     );
   }
 
-  // Show the original challenges list
+  // Show the challenges list
   return (
     <ChallengesListView 
       challenges={challenges}
       onSelectChallenge={setActiveChallenge}
       totalPoints={totalPoints}
-      stats={stats}
+      completedChallenges={completedChallenges}
     />
   );
 };

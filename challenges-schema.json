@@ -1,0 +1,513 @@
+{
+  "challenges": [
+    {
+      "id": "challenge-01",
+      "title": "Research Paper Summarizer Pro",
+      "description": "Create a prompt that summarizes long research papers into structured, concise, and easy-to-understand summaries for students.",
+      "category": "research",
+      "difficulty": "intermediate",
+      "estimatedTime": "25 minutes",
+      "points": 200,
+      "participants": 542,
+      "tags": ["research", "summarization", "academic", "ai"],
+      "featured": true,
+      "objectives": [
+        "Summarize long academic content into key points",
+        "Extract main contributions and findings",
+        "Structure output into sections like Abstract, Method, Results, Conclusion",
+        "Make summary understandable for non-experts"
+      ],
+      "requirements": {
+        "inputFormat": "Research paper text or excerpt",
+        "outputFormat": "Structured academic summary",
+        "constraints": [
+          "Summary must be under 300 words",
+          "Use bullet points for key contributions",
+          "Avoid copying sentences directly from input",
+          "Use simple language suitable for undergraduate students"
+        ]
+      },
+      "testCases": [
+        {
+          "input": "This paper proposes a deep learning-based system for early cancer detection using cystoscopy images. The model achieved 92% accuracy and reduces false positives by 15% compared to existing methods...",
+          "expectedElements": [
+            "Clear problem statement",
+            "Method description (deep learning, cystoscopy)",
+            "Key results (92% accuracy, reduced false positives)",
+            "Conclusion and impact on healthcare"
+          ]
+        }
+      ],
+      "evaluation": {
+        "criteria": [
+          {
+            "name": "Structure",
+            "weight": 30,
+            "description": "Summary is well organized into sections"
+          },
+          {
+            "name": "Conciseness",
+            "weight": 25,
+            "description": "Information is compact and within word limit"
+          },
+          {
+            "name": "Accuracy",
+            "weight": 25,
+            "description": "Key ideas and results are correctly captured"
+          },
+          {
+            "name": "Readability",
+            "weight": 20,
+            "description": "Easy to understand for students"
+          }
+        ]
+      },
+      "hints": [
+        "Use headings like Abstract, Methodology, Results, Conclusion",
+        "Focus on purpose, approach, and outcomes",
+        "Avoid unnecessary technical jargon"
+      ],
+      "sampleSolution": {
+        "prompt": "You are an academic research assistant. Summarize the given research paper into a structured summary with the following sections:\n\n1. Problem Statement\n2. Methodology\n3. Key Results\n4. Conclusion and Impact\n\nRules:\n- Keep the summary under 300 words\n- Use bullet points for key contributions\n- Use simple language for undergraduate students\n- Do not copy sentences directly from the text\n\nResearch Paper Text: {input}",
+        "explanation": "This prompt enforces structure, conciseness, and academic clarity, making it ideal for students and researchers."
+      },
+      "createdAt": "2026-01-25T11:30:00.000Z",
+      "updatedAt": "2026-01-25T11:30:00.000Z"
+    },
+    {
+      "id": "challenge-011",
+      "title": "Bug Fixing Assistant",
+      "description": "Create a prompt that helps identify bugs in code and suggests fixes with clear explanations.",
+      "category": "programming",
+      "difficulty": "intermediate",
+      "estimatedTime": "20 minutes",
+      "points": 180,
+      "participants": 389,
+      "tags": ["debugging", "code", "ai", "programming"],
+      "featured": false,
+      "objectives": [
+        "Detect logical or syntax errors in code",
+        "Explain why the bug occurs",
+        "Suggest corrected code",
+        "Provide improvement tips for best practices"
+      ],
+      "requirements": {
+        "inputFormat": "Code snippet with potential bugs",
+        "outputFormat": "Bug report with fixed code and explanation",
+        "constraints": [
+          "Must explain the bug in simple language",
+          "Provide corrected code snippet",
+          "Limit explanation to 200 words"
+        ]
+      },
+      "testCases": [
+        {
+          "input": "int main(){ int x=10; if(x=5){ cout<<\"Hello\"; } }",
+          "expectedElements": [
+            "Identify assignment instead of comparison",
+            "Explain the logical error",
+            "Provide corrected condition using ==",
+            "Explain impact of the bug"
+          ]
+        }
+      ],
+      "evaluation": {
+        "criteria": [
+          {
+            "name": "Bug Identification",
+            "weight": 35,
+            "description": "Correctly identifies the main bug"
+          },
+          {
+            "name": "Explanation",
+            "weight": 30,
+            "description": "Clear explanation of why the bug happens"
+          },
+          {
+            "name": "Fix Quality",
+            "weight": 25,
+            "description": "Correct and clean fixed code"
+          },
+          {
+            "name": "Clarity",
+            "weight": 10,
+            "description": "Easy to understand for beginners"
+          }
+        ]
+      },
+      "hints": [
+        "Check operators carefully (== vs =)",
+        "Look for common syntax and logic mistakes",
+        "Explain like teaching a junior developer"
+      ],
+      "sampleSolution": {
+        "prompt": "You are a senior software engineer. Analyze the given code and identify any bugs. Explain the bug in simple terms, provide the corrected code, and suggest best practices.\n\nCode: {input}",
+        "explanation": "This prompt forces structured debugging, explanation, and code correction, making it ideal for learning debugging skills."
+      },
+      "createdAt": "2026-01-25T11:40:00.000Z",
+      "updatedAt": "2026-01-25T11:40:00.000Z"
+    },
+    {
+      "id": "challenge-002", 
+      "title": "Code Debugging Detective",
+      "description": "Design a prompt that identifies bugs, explains the issue, and provides fixes with educational context.",
+      "category": "coding",
+      "difficulty": "intermediate",
+      "estimatedTime": "25 minutes",
+      "points": 250,
+      "participants": 856,
+      "tags": ["debugging", "coding", "education"],
+      "featured": true,
+      "objectives": [
+        "Identify bugs in code snippets accurately",
+        "Explain the root cause of issues",
+        "Provide corrected code with explanations",
+        "Offer best practices to prevent similar bugs"
+      ],
+      "requirements": {
+        "inputFormat": "Code snippet with potential bugs",
+        "outputFormat": "Structured debugging report",
+        "constraints": [
+          "Support multiple programming languages",
+          "Explain both syntax and logic errors",
+          "Provide educational context"
+        ]
+      },
+      "testCases": [
+        {
+          "input": "```python\ndef calculate_average(numbers):\n    total = 0\n    for num in numbers:\n        total += num\n    return total / len(numbers)\n\nresult = calculate_average([])\nprint(result)\n```",
+          "expectedElements": [
+            "Identifies division by zero error",
+            "Explains empty list handling",
+            "Provides corrected code",
+            "Suggests input validation"
+          ]
+        }
+      ],
+      "evaluation": {
+        "criteria": [
+          {
+            "name": "Bug Identification",
+            "weight": 35,
+            "description": "Correctly identifies all bugs in the code"
+          },
+          {
+            "name": "Explanation Quality",
+            "weight": 25,
+            "description": "Clear explanation of why bugs occur"
+          },
+          {
+            "name": "Solution Accuracy",
+            "weight": 25,
+            "description": "Provides working, corrected code"
+          },
+          {
+            "name": "Educational Value",
+            "weight": 15,
+            "description": "Includes learning points and best practices"
+          }
+        ]
+      },
+      "hints": [
+        "Look for both syntax and logical errors",
+        "Consider edge cases like empty inputs",
+        "Explain the 'why' behind each fix"
+      ],
+      "sampleSolution": {
+        "prompt": "You are an expert code reviewer and debugging assistant. Analyze the provided code and:\n\n1. **Identify Issues**: List all bugs, errors, or potential problems\n2. **Explain Root Causes**: Describe why each issue occurs\n3. **Provide Fixes**: Show corrected code with explanations\n4. **Best Practices**: Suggest improvements to prevent similar issues\n\nFormat your response as:\n\n## Issues Found\n[List of problems]\n\n## Root Cause Analysis\n[Detailed explanations]\n\n## Corrected Code\n```language\n[Fixed code]\n```\n\n## Recommendations\n[Best practices and improvements]\n\nCode to analyze:\n{input}",
+        "explanation": "This prompt creates a structured debugging workflow that's both thorough and educational."
+      },
+      "createdAt": "2026-01-25T10:52:00.000Z",
+      "updatedAt": "2026-01-25T10:52:00.000Z"
+    },
+    {
+      "id": "challenge-003",
+      "title": "Interactive Story Architect", 
+      "description": "Build a prompt that creates engaging branching stories with character development and plot choices.",
+      "category": "creative",
+      "difficulty": "intermediate",
+      "estimatedTime": "30 minutes", 
+      "points": 300,
+      "participants": 2103,
+      "tags": ["storytelling", "creative", "interactive"],
+      "featured": false,
+      "objectives": [
+        "Create compelling story openings with clear settings",
+        "Develop interesting characters with distinct personalities", 
+        "Design meaningful choice points that affect the narrative",
+        "Maintain narrative consistency across branches"
+      ],
+      "requirements": {
+        "inputFormat": "Genre, theme, and character preferences",
+        "outputFormat": "Interactive story with choice branches",
+        "constraints": [
+          "Minimum 3 choice points per story segment",
+          "Each choice must meaningfully impact the story",
+          "Character actions must align with established personalities"
+        ]
+      },
+      "testCases": [
+        {
+          "input": "Genre: Sci-fi mystery\nTheme: Trust and betrayal\nSetting: Space station\nMain character: Security officer with trust issues",
+          "expectedElements": [
+            "Compelling opening scene",
+            "Clear character motivation",
+            "Mystery element introduction", 
+            "3+ meaningful choices",
+            "Consequences preview for each choice"
+          ]
+        }
+      ],
+      "evaluation": {
+        "criteria": [
+          {
+            "name": "Story Engagement",
+            "weight": 30,
+            "description": "Story hooks reader and maintains interest"
+          },
+          {
+            "name": "Character Development", 
+            "weight": 25,
+            "description": "Characters feel real and consistent"
+          },
+          {
+            "name": "Choice Quality",
+            "weight": 25,
+            "description": "Choices are meaningful and impactful"
+          },
+          {
+            "name": "Narrative Structure",
+            "weight": 20,
+            "description": "Story flows logically with proper pacing"
+          }
+        ]
+      },
+      "hints": [
+        "Start with a compelling hook that establishes stakes",
+        "Make each choice reveal character or advance plot",
+        "Preview consequences to help readers make informed decisions"
+      ],
+      "sampleSolution": {
+        "prompt": "You are a master interactive storyteller. Create an engaging story segment with:\n\n**Story Elements:**\n- Compelling opening that establishes setting, character, and conflict\n- Rich sensory details that immerse the reader\n- Character thoughts/motivations that drive the narrative\n\n**Interactive Choices:**\n- Present 3-4 meaningful choices at the end\n- Each choice should have different consequences for character/plot\n- Preview potential outcomes to help reader decide\n\n**Format:**\n[Story segment - 200-300 words]\n\n**What do you choose?**\nA) [Choice 1] - [Brief consequence preview]\nB) [Choice 2] - [Brief consequence preview] \nC) [Choice 3] - [Brief consequence preview]\n\nInput parameters:\n{input}",
+        "explanation": "This prompt balances narrative quality with interactive elements, ensuring both engagement and meaningful choices."
+      },
+      "createdAt": "2026-01-25T10:52:00.000Z",
+      "updatedAt": "2026-01-25T10:52:00.000Z"
+    },
+    {
+      "id": "challenge-004",
+      "title": "Data Insights Oracle",
+      "description": "Craft a prompt that analyzes complex datasets and provides actionable business insights with visualizations.",
+      "category": "analytics", 
+      "difficulty": "advanced",
+      "estimatedTime": "45 minutes",
+      "points": 500,
+      "participants": 421,
+      "tags": ["data-analysis", "business-intelligence", "visualization"],
+      "featured": true,
+      "objectives": [
+        "Identify key patterns and trends in data",
+        "Translate technical findings into business language",
+        "Recommend specific, actionable next steps",
+        "Suggest appropriate visualization methods"
+      ],
+      "requirements": {
+        "inputFormat": "Dataset description with business context",
+        "outputFormat": "Comprehensive analysis report",
+        "constraints": [
+          "Must include statistical significance testing",
+          "Recommendations must be specific and measurable", 
+          "Consider business constraints and feasibility"
+        ]
+      },
+      "testCases": [
+        {
+          "input": "Dataset: E-commerce sales data (6 months)\nColumns: date, product_id, category, price, quantity, customer_id, region\nBusiness Goal: Increase Q4 revenue by 15%\nConstraints: Limited marketing budget, seasonal trends",
+          "expectedElements": [
+            "Revenue trend analysis",
+            "Top performing products/categories",
+            "Regional performance insights",
+            "Customer behavior patterns",
+            "Specific recommendations with expected impact"
+          ]
+        }
+      ],
+      "evaluation": {
+        "criteria": [
+          {
+            "name": "Analysis Depth",
+            "weight": 30,
+            "description": "Thorough exploration of data patterns and relationships"
+          },
+          {
+            "name": "Business Relevance",
+            "weight": 25,
+            "description": "Insights directly address business objectives"
+          },
+          {
+            "name": "Actionability",
+            "weight": 25,
+            "description": "Recommendations are specific and implementable"
+          },
+          {
+            "name": "Communication",
+            "weight": 20,
+            "description": "Complex findings explained clearly for business audience"
+          }
+        ]
+      },
+      "hints": [
+        "Start with the business question, not the data",
+        "Look for correlations that suggest causation",
+        "Quantify the potential impact of recommendations"
+      ],
+      "sampleSolution": {
+        "prompt": "You are a senior data analyst presenting to business stakeholders. Analyze the provided dataset and create a comprehensive report:\n\n## Executive Summary\n- Key findings in 2-3 bullet points\n- Primary recommendation with expected impact\n\n## Data Analysis\n- **Trend Analysis**: Identify patterns over time\n- **Segmentation**: Break down performance by key dimensions\n- **Correlation Analysis**: Find relationships between variables\n- **Statistical Significance**: Validate findings with confidence levels\n\n## Business Insights\n- Translate findings into business implications\n- Identify opportunities and risks\n- Consider external factors and constraints\n\n## Recommendations\n- **Priority 1**: [High-impact, low-effort actions]\n- **Priority 2**: [Medium-term strategic initiatives] \n- **Priority 3**: [Long-term opportunities]\n\n## Next Steps\n- Specific actions with timelines\n- Success metrics to track\n- Required resources\n\nDataset Information:\n{input}",
+        "explanation": "This prompt ensures comprehensive analysis while maintaining business focus and actionable outcomes."
+      },
+      "createdAt": "2026-01-25T10:52:00.000Z",
+      "updatedAt": "2026-01-25T10:52:00.000Z"
+    },
+    {
+      "id": "challenge-005",
+      "title": "API Documentation Wizard",
+      "description": "Create a prompt that generates comprehensive, developer-friendly API documentation from code.",
+      "category": "documentation",
+      "difficulty": "intermediate",
+      "estimatedTime": "20 minutes",
+      "points": 200,
+      "participants": 678,
+      "tags": ["documentation", "api", "developer-tools"],
+      "featured": false,
+      "objectives": [
+        "Generate clear endpoint descriptions",
+        "Document request/response formats",
+        "Provide practical code examples",
+        "Include error handling scenarios"
+      ],
+      "requirements": {
+        "inputFormat": "API code or endpoint definitions",
+        "outputFormat": "Structured API documentation",
+        "constraints": [
+          "Must include authentication requirements",
+          "Cover all HTTP methods and status codes",
+          "Provide examples in multiple programming languages"
+        ]
+      },
+      "testCases": [
+        {
+          "input": "```python\n@app.route('/api/users/<int:user_id>', methods=['GET', 'PUT', 'DELETE'])\n@require_auth\ndef user_operations(user_id):\n    if request.method == 'GET':\n        return get_user(user_id)\n    elif request.method == 'PUT':\n        return update_user(user_id, request.json)\n    elif request.method == 'DELETE':\n        return delete_user(user_id)\n```",
+          "expectedElements": [
+            "Endpoint URL and methods",
+            "Authentication requirements",
+            "Request/response schemas",
+            "Status codes and error handling",
+            "Code examples"
+          ]
+        }
+      ],
+      "evaluation": {
+        "criteria": [
+          {
+            "name": "Completeness",
+            "weight": 30,
+            "description": "Covers all aspects of the API endpoint"
+          },
+          {
+            "name": "Clarity",
+            "weight": 25,
+            "description": "Easy to understand for developers"
+          },
+          {
+            "name": "Examples Quality",
+            "weight": 25,
+            "description": "Practical, working code examples"
+          },
+          {
+            "name": "Structure",
+            "weight": 20,
+            "description": "Well-organized and scannable format"
+          }
+        ]
+      },
+      "hints": [
+        "Think from a developer's perspective - what do they need to know?",
+        "Include both success and error scenarios",
+        "Make examples copy-pasteable"
+      ],
+      "sampleSolution": {
+        "prompt": "You are a technical writer creating API documentation. Generate comprehensive docs for the provided endpoint:\n\n## Endpoint Overview\n- **URL**: [endpoint path]\n- **Methods**: [supported HTTP methods]\n- **Authentication**: [requirements]\n- **Description**: [what this endpoint does]\n\n## Request Format\n### Headers\n```\n[required headers]\n```\n\n### Parameters\n| Parameter | Type | Required | Description |\n|-----------|------|----------|-------------|\n| [param] | [type] | [yes/no] | [description] |\n\n### Request Body (if applicable)\n```json\n{\n  \"example\": \"request body\"\n}\n```\n\n## Response Format\n### Success Response (200)\n```json\n{\n  \"example\": \"response\"\n}\n```\n\n### Error Responses\n- **400 Bad Request**: [when this occurs]\n- **401 Unauthorized**: [when this occurs]\n- **404 Not Found**: [when this occurs]\n\n## Code Examples\n### cURL\n```bash\n[curl example]\n```\n\n### JavaScript\n```javascript\n[js example]\n```\n\n### Python\n```python\n[python example]\n```\n\nAPI Code:\n{input}",
+        "explanation": "This prompt creates developer-friendly documentation with all essential information and practical examples."
+      },
+      "createdAt": "2026-01-25T10:52:00.000Z",
+      "updatedAt": "2026-01-25T10:52:00.000Z"
+    }
+  ],
+  "categories": [
+    {
+      "id": "research",
+      "name": "Research",
+      "description": "Academic research and paper analysis challenges",
+      "icon": "🔬"
+    },
+    {
+      "id": "productivity",
+      "name": "Productivity",
+      "description": "Challenges focused on improving workflow and efficiency",
+      "icon": "⚡"
+    },
+    {
+      "id": "programming",
+      "name": "Programming",
+      "description": "Code debugging and programming challenges",
+      "icon": "🐛"
+    },
+    {
+      "id": "coding", 
+      "name": "Coding",
+      "description": "Programming and software development challenges",
+      "icon": "💻"
+    },
+    {
+      "id": "creative",
+      "name": "Creative",
+      "description": "Storytelling, content creation, and artistic challenges", 
+      "icon": "🎨"
+    },
+    {
+      "id": "analytics",
+      "name": "Analytics", 
+      "description": "Data analysis and business intelligence challenges",
+      "icon": "📊"
+    },
+    {
+      "id": "documentation",
+      "name": "Documentation",
+      "description": "Technical writing and documentation challenges",
+      "icon": "📝"
+    }
+  ],
+  "difficultyLevels": [
+    {
+      "id": "beginner",
+      "name": "Beginner", 
+      "description": "Perfect for getting started with prompt engineering",
+      "pointRange": [50, 150],
+      "timeRange": "10-20 minutes"
+    },
+    {
+      "id": "intermediate",
+      "name": "Intermediate",
+      "description": "For those with some prompt engineering experience", 
+      "pointRange": [150, 350],
+      "timeRange": "20-35 minutes"
+    },
+    {
+      "id": "advanced",
+      "name": "Advanced",
+      "description": "Complex challenges for experienced practitioners",
+      "pointRange": [350, 600], 
+      "timeRange": "35-60 minutes"
+    }
+  ]
+}

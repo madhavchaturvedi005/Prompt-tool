@@ -1,10 +1,11 @@
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
-import { useState } from "react";
-import { Search, Copy, Check, Star, Sparkles, TrendingUp, Zap, BookOpen, Code, Palette, BarChart3, GraduationCap, Briefcase } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Search, Copy, Check, Star, Sparkles, TrendingUp, Zap, BookOpen, Code, Palette, BarChart3, GraduationCap, Briefcase, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import { fetchAndParsePrompts, type ParsedPrompt } from "@/lib/promptParser";
 
 const categories = [
   { id: "all", label: "All", icon: Sparkles },
@@ -95,8 +96,8 @@ const FloatingPaths = ({ position }: { position: number }) => {
             d={path.d}
             stroke="white"
             strokeWidth={path.width}
-            strokeOpacity={0.1 + path.id * 0.01}
-            initial={{ pathLength: 0.3, opacity: 0.5 }}
+            strokeOpacity={0.1 + path.id * 0.02}
+            initial={{ pathLength: 0.3, opacity: 0.6 }}
             animate={{
               pathLength: 1,
               opacity: [0.2, 0.4, 0.2],
@@ -114,20 +115,129 @@ const FloatingPaths = ({ position }: { position: number }) => {
   );
 };
 
+const PromptModal = ({ 
+  prompt, 
+  isOpen, 
+  onClose, 
+  copiedId, 
+  onCopy 
+}: { 
+  prompt: ParsedPrompt | null; 
+  isOpen: boolean; 
+  onClose: () => void;
+  copiedId: number | null;
+  onCopy: (id: number, text: string) => void;
+}) => {
+  if (!prompt) return null;
+
+  const category = categories.find(c => c.id === prompt.category);
+  const Icon = category?.icon || Sparkles;
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          {/* Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50"
+            onClick={onClose}
+          />
+          
+          {/* Modal */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            className="fixed inset-4 md:inset-8 lg:inset-16 bg-card/95 backdrop-blur-sm rounded-2xl border border-border/50 z-50 overflow-hidden flex flex-col"
+          >
+            {/* Header */}
+            <div className="flex items-start gap-4 p-6 border-b border-border/30">
+              <div className="w-12 h-12 rounded-xl bg-foreground/10 flex items-center justify-center flex-shrink-0">
+                <Icon className="w-6 h-6 text-foreground" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h2 className="text-2xl font-semibold mb-2">{prompt.title}</h2>
+                <p className="text-muted-foreground mb-2">{prompt.description}</p>
+                {prompt.contributor && (
+                  <p className="text-sm text-muted-foreground/70">
+                    Contributed by @{prompt.contributor}
+                  </p>
+                )}
+                <div className="flex items-center gap-4 text-sm text-muted-foreground mt-3">
+                  <div className="flex items-center gap-1.5">
+                    <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                    <span>{prompt.stars}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <Zap className="w-4 h-4" />
+                    <span>{prompt.uses.toLocaleString()} uses</span>
+                  </div>
+                  <div className="px-2 py-1 rounded-full bg-foreground/10 text-xs font-medium capitalize">
+                    {prompt.category}
+                  </div>
+                </div>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onClose}
+                className="flex-shrink-0"
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 overflow-auto p-6">
+              <div className="bg-muted/50 rounded-xl p-6 border border-border/30">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold">Prompt</h3>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="border-foreground/20 hover:bg-foreground hover:text-background transition-all"
+                    onClick={() => onCopy(prompt.id, prompt.prompt)}
+                  >
+                    {copiedId === prompt.id ? (
+                      <>
+                        <Check className="w-4 h-4 mr-2" />
+                        Copied
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-4 h-4 mr-2" />
+                        Copy Prompt
+                      </>
+                    )}
+                  </Button>
+                </div>
+                <pre className="text-sm text-muted-foreground whitespace-pre-wrap font-mono leading-relaxed">
+                  {prompt.prompt}
+                </pre>
+              </div>
+            </div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
+  );
+};
+
 const PromptCard = ({ 
   prompt, 
   index, 
   copiedId, 
   onCopy, 
-  expanded, 
-  onToggle 
+  onOpenModal
 }: { 
-  prompt: typeof prompts[0]; 
+  prompt: ParsedPrompt; 
   index: number; 
   copiedId: number | null; 
   onCopy: (id: number, text: string) => void;
-  expanded: boolean;
-  onToggle: () => void;
+  onOpenModal: (prompt: ParsedPrompt) => void;
 }) => {
   const category = categories.find(c => c.id === prompt.category);
   const Icon = category?.icon || Sparkles;
@@ -139,10 +249,10 @@ const PromptCard = ({
       transition={{ duration: 0.4, delay: index * 0.05 }}
       layout
       className={cn(
-        "group relative bg-card/60 backdrop-blur-sm rounded-2xl border border-border/50 overflow-hidden transition-all duration-300",
-        "hover:border-foreground/20 hover:bg-card/80",
-        expanded && "ring-1 ring-foreground/20"
+        "group relative bg-card/60 backdrop-blur-sm rounded-2xl border border-border/50 overflow-hidden transition-all duration-300 cursor-pointer",
+        "hover:border-foreground/20 hover:bg-card/80 hover:scale-[1.02]"
       )}
+      onClick={() => onOpenModal(prompt)}
     >
       {prompt.featured && (
         <div className="absolute top-4 right-4 z-10">
@@ -160,27 +270,14 @@ const PromptCard = ({
           </div>
           <div className="flex-1 min-w-0">
             <h3 className="text-lg font-semibold mb-1 truncate">{prompt.title}</h3>
-            <p className="text-sm text-muted-foreground line-clamp-2">{prompt.description}</p>
+            <p className="text-sm text-muted-foreground line-clamp-2 mb-1">{prompt.description}</p>
+            {prompt.contributor && (
+              <p className="text-xs text-muted-foreground/70">
+                by @{prompt.contributor}
+              </p>
+            )}
           </div>
         </div>
-
-        <AnimatePresence mode="wait">
-          {expanded && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.2 }}
-              className="mb-4"
-            >
-              <div className="bg-muted/50 rounded-xl p-4 border border-border/30">
-                <pre className="text-sm text-muted-foreground whitespace-pre-wrap font-mono leading-relaxed">
-                  {prompt.prompt}
-                </pre>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4 text-xs text-muted-foreground">
@@ -194,34 +291,27 @@ const PromptCard = ({
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onToggle}
-              className="text-xs text-muted-foreground hover:text-foreground"
-            >
-              {expanded ? "Collapse" : "Expand"}
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="border-foreground/20 hover:bg-foreground hover:text-background transition-all"
-              onClick={() => onCopy(prompt.id, prompt.prompt)}
-            >
-              {copiedId === prompt.id ? (
-                <>
-                  <Check className="w-3.5 h-3.5" />
-                  Copied
-                </>
-              ) : (
-                <>
-                  <Copy className="w-3.5 h-3.5" />
-                  Copy
-                </>
-              )}
-            </Button>
-          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            className="border-foreground/20 hover:bg-foreground hover:text-background transition-all"
+            onClick={(e) => {
+              e.stopPropagation();
+              onCopy(prompt.id, prompt.prompt);
+            }}
+          >
+            {copiedId === prompt.id ? (
+              <>
+                <Check className="w-3.5 h-3.5" />
+                Copied
+              </>
+            ) : (
+              <>
+                <Copy className="w-3.5 h-3.5" />
+                Copy
+              </>
+            )}
+          </Button>
         </div>
       </div>
     </motion.div>
@@ -232,7 +322,25 @@ const Library = () => {
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
   const [copiedId, setCopiedId] = useState<number | null>(null);
-  const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [prompts, setPrompts] = useState<ParsedPrompt[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedPrompt, setSelectedPrompt] = useState<ParsedPrompt | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    const loadPrompts = async () => {
+      try {
+        const parsedPrompts = await fetchAndParsePrompts();
+        setPrompts(parsedPrompts);
+      } catch (error) {
+        console.error('Failed to load prompts:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadPrompts();
+  }, []);
 
   const filteredPrompts = prompts.filter((p) => {
     const matchesSearch = p.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -241,7 +349,7 @@ const Library = () => {
     return matchesSearch && matchesCategory;
   });
 
-  const featuredPrompts = filteredPrompts.filter(p => p.featured);
+  const featuredPrompts = filteredPrompts.filter(p => p.featured).slice(0, 10); // Limit to 10 trending
   const regularPrompts = filteredPrompts.filter(p => !p.featured);
 
   const handleCopy = (id: number, prompt: string) => {
@@ -250,12 +358,37 @@ const Library = () => {
     setTimeout(() => setCopiedId(null), 2000);
   };
 
+  const handleOpenModal = (prompt: ParsedPrompt) => {
+    setSelectedPrompt(prompt);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedPrompt(null);
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <div className="flex items-center justify-center min-h-[50vh] pt-24">
+          <div className="text-center">
+            <div className="w-8 h-8 border-2 border-foreground/20 border-t-foreground rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-muted-foreground">Loading prompts...</p>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
       
       {/* Hero Section */}
-      <section className="relative min-h-[50vh] flex items-center justify-center overflow-hidden pt-24">
+      <section className="relative min-h-[40vh] flex items-center justify-center overflow-hidden pt-20 pb-8">
         <FloatingPaths position={1} />
         <FloatingPaths position={-1} />
         
@@ -265,38 +398,35 @@ const Library = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <span className="inline-flex items-center gap-2 text-sm font-medium tracking-widest uppercase mb-6 text-muted-foreground">
+            <span className="inline-flex items-center gap-2 text-sm font-medium tracking-widest uppercase mb-4 text-muted-foreground">
               <BookOpen className="w-4 h-4" />
               Resources
             </span>
             
-            <h1 className="text-5xl md:text-7xl font-serif font-semibold mb-6">
-              <span className="block">Prompt</span>
-              <span className="block bg-gradient-to-r from-foreground via-foreground/80 to-foreground/60 bg-clip-text text-transparent">
-                Library
-              </span>
+            <h1 className="text-4xl md:text-6xl font-serif font-semibold mb-6 bg-gradient-to-r from-foreground via-foreground/80 to-foreground/60 bg-clip-text text-transparent">
+              Prompt Library
             </h1>
             
-            <div className="w-24 h-px bg-gradient-to-r from-transparent via-foreground/50 to-transparent mx-auto mb-6" />
+            <div className="w-24 h-px bg-gradient-to-r from-transparent via-foreground/50 to-transparent mx-auto mb-4" />
             
-            <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-8">
+            <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-6">
               A curated collection of battle-tested prompts designed by experts for every use case.
             </p>
 
             {/* Stats */}
-            <div className="flex items-center justify-center gap-8 text-sm">
+            <div className="flex items-center justify-center gap-6 text-sm">
               <div className="text-center">
-                <div className="text-2xl font-semibold">{prompts.length}</div>
+                <div className="text-xl font-semibold">{prompts.length}</div>
                 <div className="text-muted-foreground">Prompts</div>
               </div>
-              <div className="w-px h-8 bg-border" />
+              <div className="w-px h-6 bg-border" />
               <div className="text-center">
-                <div className="text-2xl font-semibold">{categories.length - 1}</div>
+                <div className="text-xl font-semibold">{categories.length - 1}</div>
                 <div className="text-muted-foreground">Categories</div>
               </div>
-              <div className="w-px h-8 bg-border" />
+              <div className="w-px h-6 bg-border" />
               <div className="text-center">
-                <div className="text-2xl font-semibold">
+                <div className="text-xl font-semibold">
                   {(prompts.reduce((acc, p) => acc + p.uses, 0) / 1000).toFixed(1)}k
                 </div>
                 <div className="text-muted-foreground">Total Uses</div>
@@ -359,6 +489,7 @@ const Library = () => {
               <div className="flex items-center gap-2 mb-6">
                 <TrendingUp className="w-5 h-5 text-foreground" />
                 <h2 className="text-xl font-semibold">Trending Prompts</h2>
+                <span className="text-sm text-muted-foreground">({featuredPrompts.length})</span>
               </div>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {featuredPrompts.map((prompt, index) => (
@@ -368,8 +499,7 @@ const Library = () => {
                     index={index}
                     copiedId={copiedId}
                     onCopy={handleCopy}
-                    expanded={expandedId === prompt.id}
-                    onToggle={() => setExpandedId(expandedId === prompt.id ? null : prompt.id)}
+                    onOpenModal={handleOpenModal}
                   />
                 ))}
               </div>
@@ -398,8 +528,7 @@ const Library = () => {
                   index={index}
                   copiedId={copiedId}
                   onCopy={handleCopy}
-                  expanded={expandedId === prompt.id}
-                  onToggle={() => setExpandedId(expandedId === prompt.id ? null : prompt.id)}
+                  onOpenModal={handleOpenModal}
                 />
               ))}
             </div>
@@ -420,6 +549,14 @@ const Library = () => {
           </div>
         </div>
       </main>
+
+      <PromptModal
+        prompt={selectedPrompt}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        copiedId={copiedId}
+        onCopy={handleCopy}
+      />
 
       <Footer />
     </div>

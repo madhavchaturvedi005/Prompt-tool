@@ -2,8 +2,11 @@ import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BackgroundPaths } from "./BackgroundPaths";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 export function HeroSection() {
+  const { isAuthenticated } = useAuth();
   const title = "Master the Craft of Prompt Engineering";
   const words = title.split(" ");
 
@@ -69,9 +72,8 @@ export function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1, duration: 0.6 }}
           >
-            Unlock the full potential of AI with expertly curated lessons, 
-            hands-on practice, and real-world challenges designed for those 
-            who seek excellence.
+            Learn from curated resources, practice with AI evaluation, tackle challenges, 
+            and access professional tools—all in one comprehensive platform.
           </motion.p>
 
           {/* CTA Buttons */}
@@ -81,20 +83,49 @@ export function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.2, duration: 0.6 }}
           >
-            <Button 
-              size="lg" 
-              className="group px-8 py-6 text-base bg-primary text-primary-foreground hover:bg-primary/90 rounded-full"
-            >
-              Begin Your Journey
-              <ArrowRight className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" />
-            </Button>
-            <Button 
-              variant="outline" 
-              size="lg" 
-              className="px-8 py-6 text-base border-border text-foreground hover:bg-accent rounded-full"
-            >
-              Explore Curriculum
-            </Button>
+            {isAuthenticated ? (
+              <>
+                <Link to="/practice">
+                  <Button 
+                    size="lg" 
+                    className="group px-8 py-6 text-base bg-primary text-primary-foreground hover:bg-primary/90 rounded-full"
+                  >
+                    Start Practicing
+                    <ArrowRight className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" />
+                  </Button>
+                </Link>
+                <Link to="/learn">
+                  <Button 
+                    variant="outline" 
+                    size="lg" 
+                    className="px-8 py-6 text-base border-border text-foreground hover:bg-accent rounded-full"
+                  >
+                    Explore Resources
+                  </Button>
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link to="/signup">
+                  <Button 
+                    size="lg" 
+                    className="group px-8 py-6 text-base bg-primary text-primary-foreground hover:bg-primary/90 rounded-full"
+                  >
+                    Begin Your Journey
+                    <ArrowRight className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" />
+                  </Button>
+                </Link>
+                <Link to="/learn">
+                  <Button 
+                    variant="outline" 
+                    size="lg" 
+                    className="px-8 py-6 text-base border-border text-foreground hover:bg-accent rounded-full"
+                  >
+                    Explore Features
+                  </Button>
+                </Link>
+              </>
+            )}
           </motion.div>
 
           {/* Stats */}
@@ -105,9 +136,9 @@ export function HeroSection() {
             transition={{ delay: 1.4, duration: 0.6 }}
           >
             {[
-              { value: "50+", label: "Expert Modules" },
-              { value: "200+", label: "Practice Prompts" },
-              { value: "10K+", label: "Certified Learners" },
+              { value: "100+", label: "Learning Resources" },
+              { value: "AI-Powered", label: "Practice Arena" },
+              { value: "1000+", label: "Expert Prompts" },
             ].map((stat, index) => (
               <motion.div
                 key={index}

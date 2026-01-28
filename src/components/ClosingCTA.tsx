@@ -1,11 +1,12 @@
-"use client";
-
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BackgroundPaths } from "./BackgroundPaths";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 export function ClosingCTA() {
+  const { isAuthenticated } = useAuth();
   const title = "Ready to Transform Your Skills?";
   const words = title.split(" ");
 
@@ -83,8 +84,8 @@ export function ClosingCTA() {
             viewport={{ once: true }}
             transition={{ delay: 0.7, duration: 0.6 }}
           >
-            Join thousands of learners who have mastered the art of prompt engineering. 
-            Start your journey today and unlock the full potential of AI.
+            Access curated learning resources, practice with AI evaluation, tackle challenges, 
+            and use professional tools—all in one platform.
           </motion.p>
 
           {/* CTA Buttons */}
@@ -95,20 +96,49 @@ export function ClosingCTA() {
             viewport={{ once: true }}
             transition={{ delay: 0.9, duration: 0.6 }}
           >
-            <Button 
-              size="lg" 
-              className="group px-8 py-6 text-base bg-foreground text-background hover:bg-foreground/90 rounded-full"
-            >
-              Start Learning Now
-              <ArrowRight className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" />
-            </Button>
-            <Button 
-              variant="outline" 
-              size="lg" 
-              className="px-8 py-6 text-base border-border text-foreground hover:bg-accent rounded-full"
-            >
-              View All Courses
-            </Button>
+            {isAuthenticated ? (
+              <>
+                <Link to="/challenges">
+                  <Button 
+                    size="lg" 
+                    className="group px-8 py-6 text-base bg-foreground text-background hover:bg-foreground/90 rounded-full"
+                  >
+                    Take a Challenge
+                    <ArrowRight className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" />
+                  </Button>
+                </Link>
+                <Link to="/library">
+                  <Button 
+                    variant="outline" 
+                    size="lg" 
+                    className="px-8 py-6 text-base border-border text-foreground hover:bg-accent rounded-full"
+                  >
+                    Browse Library
+                  </Button>
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link to="/signup">
+                  <Button 
+                    size="lg" 
+                    className="group px-8 py-6 text-base bg-foreground text-background hover:bg-foreground/90 rounded-full"
+                  >
+                    Start Learning Now
+                    <ArrowRight className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" />
+                  </Button>
+                </Link>
+                <Link to="/practice">
+                  <Button 
+                    variant="outline" 
+                    size="lg" 
+                    className="px-8 py-6 text-base border-border text-foreground hover:bg-accent rounded-full"
+                  >
+                    Try Practice Arena
+                  </Button>
+                </Link>
+              </>
+            )}
           </motion.div>
         </div>
       </div>

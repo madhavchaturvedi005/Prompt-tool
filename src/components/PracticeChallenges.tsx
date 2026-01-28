@@ -2,41 +2,18 @@ import { Clock, Star, ChevronRight, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
+import { getWeeklyChallenges } from "@/lib/challengesData";
 
-const challenges = [
-  {
-    title: "Email Assistant",
-    description: "Create a prompt that helps draft professional emails from bullet points.",
-    difficulty: "Beginner",
-    time: "15 min",
-    points: 100,
-    participants: 1234,
-  },
-  {
-    title: "Code Debugger",
-    description: "Design a prompt that identifies and explains bugs in code snippets.",
-    difficulty: "Intermediate",
-    time: "25 min",
-    points: 250,
-    participants: 856,
-  },
-  {
-    title: "Story Generator",
-    description: "Build a prompt that creates engaging short stories with specific themes.",
-    difficulty: "Intermediate",
-    time: "30 min",
-    points: 300,
-    participants: 2103,
-  },
-  {
-    title: "Data Analyst",
-    description: "Craft a prompt that analyzes datasets and provides actionable insights.",
-    difficulty: "Advanced",
-    time: "45 min",
-    points: 500,
-    participants: 421,
-  },
-];
+// Get the first 4 challenges for weekly display
+const weeklyData = getWeeklyChallenges(4);
+const challenges = weeklyData.map(challenge => ({
+  title: challenge.title,
+  description: challenge.description,
+  difficulty: challenge.difficulty.charAt(0).toUpperCase() + challenge.difficulty.slice(1),
+  time: challenge.estimatedTime,
+  points: challenge.points,
+  participants: challenge.participants,
+}));
 
 const difficultyColors: Record<string, string> = {
   Beginner: "text-emerald-400",
@@ -112,7 +89,7 @@ export function PracticeChallenges() {
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
           <div>
             <span className="text-muted-foreground text-sm font-medium tracking-widest uppercase mb-4 block">
-              Challenges
+              Weekly Challenges
             </span>
             <h2 className="text-3xl md:text-4xl font-heading font-semibold mb-4">
               Practice <span className="text-foreground">Excellence</span>

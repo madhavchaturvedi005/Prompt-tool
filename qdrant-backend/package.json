@@ -1,0 +1,26 @@
+{
+  "name": "qdrant-backend",
+  "version": "1.0.0",
+  "description": "Backend proxy server for Qdrant vector database",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node src/test.js"
+  },
+  "keywords": [
+    "qdrant",
+    "vector-database",
+    "proxy",
+    "embeddings"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@qdrant/js-client-rest": "^1.16.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.18.2"
+  }
+}

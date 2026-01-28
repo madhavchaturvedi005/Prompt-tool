@@ -15,7 +15,7 @@ const footerLinks = {
     { name: "API", path: "/api" },
   ],
   Company: [
-    { name: "About", path: "/about" },
+    { name: "DevTools", path: "/devtools" },
     { name: "Careers", path: "/careers" },
     { name: "Contact", path: "/contact" },
     { name: "Press", path: "/press" },
@@ -42,8 +42,13 @@ export function Footer() {
           {/* Brand */}
           <div className="col-span-2">
             <Link to="/" className="flex items-center gap-2.5 text-xl font-heading font-semibold mb-4">
-              <Sparkles className="w-6 h-6 text-foreground" />
-              <span className="text-foreground">PromptLab</span>
+              <img 
+                src="/logo.png" 
+                alt="Promptee" 
+                className="w-6 h-6"
+                style={{ filter: 'invert(1) brightness(2)' }}
+              />
+              <span className="text-foreground">Promptee</span>
             </Link>
             <p className="text-muted-foreground text-sm mb-6 max-w-xs leading-relaxed">
               Master the art of AI communication with expertly crafted 
@@ -89,7 +94,7 @@ export function Footer() {
 
         {/* Bottom Bar */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
-          <p>© 2025 PromptLab. All rights reserved.</p>
+          <p>© 2025 Promptee. All rights reserved.</p>
           <p>
             Crafted with <span className="text-foreground">excellence</span> for the discerning learner
           </p>
