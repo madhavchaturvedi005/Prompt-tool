@@ -18,5 +18,5 @@ services:
       - key: OPENAI_API_KEY
         sync: false
       - key: ALLOWED_ORIGINS
-        value: https://your-frontend-url.com,http://localhost:5173
+        value: https://promptea.dev,https://www.promptea.dev,http://localhost:5173
         value: https://https://promptee.vercel.app

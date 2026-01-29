@@ -56,7 +56,7 @@ PORT=3001
 NODE_ENV=development
 
 # CORS Configuration
-ALLOWED_ORIGINS=http://localhost:5173,http://localhost:8080
+ALLOWED_ORIGINS=https://promptea.dev,https://www.promptea.dev,http://localhost:5173,http://localhost:8080
 ```
 
 ### 3. Start the Server

@@ -35,7 +35,7 @@ Your code is already pushed to: `https://github.com/madhavchaturvedi005/Prompt-t
    QDRANT_URL = https://8b745f0a-0926-468e-8989-e40430834d4f.us-east4-0.gcp.cloud.qdrant.io
    QDRANT_API_KEY = [your-qdrant-key]
    OPENAI_API_KEY = [your-openai-key]
-   ALLOWED_ORIGINS = http://localhost:5173,https://your-app.vercel.app
+   ALLOWED_ORIGINS = https://promptea.dev,https://www.promptea.dev,http://localhost:5173
    ```
 
 5. **Deploy**

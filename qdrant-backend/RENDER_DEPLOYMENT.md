@@ -47,7 +47,7 @@ This guide will help you deploy the Qdrant backend server to Render.
    QDRANT_URL = https://your-qdrant-instance.qdrant.io
    QDRANT_API_KEY = your_qdrant_api_key
    OPENAI_API_KEY = your_openai_api_key
-   ALLOWED_ORIGINS = https://your-frontend-url.com,http://localhost:5173
+   ALLOWED_ORIGINS = https://promptea.dev,https://www.promptea.dev,http://localhost:5173
    ```
 
 6. **Deploy**
@@ -175,7 +175,7 @@ curl -X POST https://qdrant-backend-xxxx.onrender.com/api/prompts/search \
 **Solutions**:
 1. Add your frontend URL to `ALLOWED_ORIGINS`
 2. Include both production and development URLs
-3. Format: `https://app.com,http://localhost:5173`
+3. Format: `https://promptea.dev,https://www.promptea.dev,http://localhost:5173`
 
 ### Qdrant Connection Errors
 
