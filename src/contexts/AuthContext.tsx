@@ -80,24 +80,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             savedPrompts: []
           };
           
-          // Load saved prompts
-          try {
-            const savedPrompts = await authService.getUserSavedPrompts(userData.id);
-            setUser({ ...userData, savedPrompts });
-            
-            // Create user profile if it doesn't exist (for email confirmed users)
-            if (event === 'SIGNED_IN' && session.user.email_confirmed_at) {
-              try {
-                await SupabaseService.createUser({
-                  email: userData.email,
-                  username: userData.username,
-                  full_name: userData.name,
-                  password_hash: 'supabase_auth'
-                });
+          // Set user immediately
+          setUser(userData);
+          
+          // Load saved prompts in background (don't block)
+          authService.getUserSavedPrompts(userData.id)
+            .then(savedPrompts => {
+              setUser(prev => prev ? { ...prev, savedPrompts } : null);
+            })
+            .catch(error => {
+              console.error('Error loading saved prompts:', error);
+            });
+          
+          // Create user profile if it doesn't exist (for email confirmed users)
+          if (event === 'SIGNED_IN' && session.user.email_confirmed_at) {
+            try {
+              await SupabaseService.createUser({
+                email: userData.email,
+                username: userData.username,
+                full_name: userData.name,
+                password_hash: 'supabase_auth'
+              });
 
-                // Award welcome points
-                await SupabaseService.addPoints({
-                  user_id: userData.id,
+              // Award welcome points
+              await SupabaseService.addPoints({
+                user_id: userData.id,
                   points: 50,
                   transaction_type: 'earned',
                   source_type: 'admin',
@@ -108,10 +115,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 console.log('Profile creation skipped (may already exist)');
               }
             }
-          } catch (error) {
-            console.error('Error loading saved prompts:', error);
-            setUser(userData);
-          }
         } else if (event === 'SIGNED_OUT') {
           setUser(null);
         }
@@ -126,12 +129,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const response = await authService.login({ email, password });
       
       if (response.success && response.user) {
-        // Load saved prompts
-        const savedPrompts = await authService.getUserSavedPrompts(response.user.id);
-        const userWithPrompts = { ...response.user, savedPrompts };
+        // Set user immediately without waiting for saved prompts
+        setUser({ ...response.user, savedPrompts: [] });
         
-        setUser(userWithPrompts);
-        // Supabase handles session storage automatically
+        // Load saved prompts in background (don't block login)
+        authService.getUserSavedPrompts(response.user.id)
+          .then(savedPrompts => {
+            setUser(prev => prev ? { ...prev, savedPrompts } : null);
+          })
+          .catch(error => {
+            console.error('Failed to load saved prompts:', error);
+            // Continue anyway - user is still logged in
+          });
+        
         return true;
       }
       

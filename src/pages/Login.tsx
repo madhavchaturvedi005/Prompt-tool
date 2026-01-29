@@ -227,38 +227,40 @@ const Login = () => {
                 <motion.div
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/30 rounded-xl p-6 mb-6 relative z-10"
+                  className="bg-foreground/5 border border-foreground/10 rounded-xl p-6 mb-6 relative z-10"
                 >
                   <div className="text-center">
                     <motion.div
-                      animate={{ scale: [1, 1.1, 1] }}
+                      animate={{ scale: [1, 1.05, 1] }}
                       transition={{ duration: 2, repeat: Infinity }}
                       className="inline-block mb-4"
                     >
-                      <Mail className="w-12 h-12 text-amber-400 mx-auto" />
+                      <div className="w-16 h-16 rounded-full bg-foreground flex items-center justify-center mx-auto">
+                        <Mail className="w-8 h-8 text-background" />
+                      </div>
                     </motion.div>
-                    <h3 className="text-lg font-semibold text-foreground mb-3">
+                    <h3 className="text-xl font-heading font-bold text-foreground mb-3">
                       Email Verification Required
                     </h3>
-                    <p className="text-muted-foreground mb-4 text-sm leading-relaxed">
-                      Please check your email inbox and click the verification link to activate your account before logging in.
+                    <p className="text-muted-foreground mb-6 text-sm leading-relaxed max-w-sm mx-auto">
+                      Please check your inbox and click the verification link to activate your account before signing in.
                     </p>
                     
                     {resendSuccess ? (
                       <motion.div
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-3 mb-4"
+                        className="bg-foreground/10 border border-foreground/20 rounded-lg p-4 mb-4"
                       >
-                        <CheckCircle className="w-5 h-5 text-emerald-400 mx-auto mb-2" />
-                        <p className="text-emerald-400 text-sm">Confirmation email sent successfully!</p>
+                        <CheckCircle className="w-5 h-5 text-foreground mx-auto mb-2" />
+                        <p className="text-foreground text-sm font-medium">Email sent successfully!</p>
                       </motion.div>
                     ) : (
                       <div className="flex flex-col sm:flex-row gap-3 justify-center">
                         <Button
                           variant="outline"
                           onClick={() => setShowEmailVerification(false)}
-                          className="h-10 px-4 rounded-lg text-sm"
+                          className="h-11 px-5 rounded-lg text-sm border-foreground/20 hover:bg-foreground/5"
                         >
                           <ArrowLeft className="w-4 h-4 mr-2" />
                           Back to Login
@@ -266,14 +268,14 @@ const Login = () => {
                         <Button
                           onClick={handleResendConfirmation}
                           disabled={isResendingEmail}
-                          className="h-10 px-4 rounded-lg bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-sm"
+                          className="h-11 px-5 rounded-lg bg-foreground hover:bg-foreground/90 text-background text-sm"
                         >
                           {isResendingEmail ? (
                             <>
                               <motion.div
                                 animate={{ rotate: 360 }}
                                 transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                                className="w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2"
+                                className="w-4 h-4 border-2 border-background border-t-transparent rounded-full mr-2"
                               />
                               Sending...
                             </>
@@ -395,39 +397,7 @@ const Login = () => {
               </motion.div>
             </motion.div>
 
-            {/* Authentication Notice */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.8 }}
-              className="mt-8 p-6 bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20 rounded-2xl text-center backdrop-blur-sm"
-            >
-              <div className="flex items-center justify-center gap-3 mb-3">
-                {supabaseStatus === 'checking' ? (
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                  >
-                    <Shield className="w-6 h-6 text-blue-400" />
-                  </motion.div>
-                ) : supabaseStatus === 'connected' ? (
-                  <CheckCircle className="w-6 h-6 text-emerald-400" />
-                ) : (
-                  <AlertCircle className="w-6 h-6 text-amber-400" />
-                )}
-                <div className="text-left">
-                  <p className="text-sm font-medium">
-                    {supabaseStatus === 'checking' && <span className="text-blue-400">Checking connection...</span>}
-                    {supabaseStatus === 'connected' && <span className="text-emerald-400">Supabase Connected</span>}
-                    {supabaseStatus === 'disconnected' && <span className="text-amber-400">Using Demo Mode</span>}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {supabaseStatus === 'connected' && 'Real authentication active'}
-                    {supabaseStatus === 'disconnected' && 'Fallback authentication'}
-                  </p>
-                </div>
-              </div>
-            </motion.div>
+
           </div>
         </div>
       </main>

@@ -113,12 +113,8 @@ const Signup = () => {
     try {
       const success = await signup(email, password, name, username);
       if (success) {
-        // Check if we need to show confirmation or redirect
-        if (!showConfirmation) {
-          // User was logged in immediately (email confirmation disabled)
-          navigate(from, { replace: true });
-        }
-        // If showConfirmation is true, the confirmation UI will be shown
+        // Always show confirmation message after signup
+        setShowConfirmation(true);
       } else {
         setError("Failed to create account. Please check your information and try again.");
       }
@@ -450,56 +446,61 @@ const Signup = () => {
                     <motion.div
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="mt-8 p-6 bg-gradient-to-r from-emerald-500/10 to-blue-500/10 border border-emerald-500/30 rounded-2xl text-center backdrop-blur-sm"
+                      className="mt-8 p-6 bg-foreground/5 border border-foreground/10 rounded-2xl text-center backdrop-blur-sm"
                     >
                       <motion.div
-                        animate={{ scale: [1, 1.1, 1] }}
+                        animate={{ scale: [1, 1.05, 1] }}
                         transition={{ duration: 2, repeat: Infinity }}
                         className="inline-block mb-4"
                       >
-                        <Mail className="w-12 h-12 text-emerald-400 mx-auto" />
+                        <div className="w-16 h-16 rounded-full bg-foreground flex items-center justify-center mx-auto">
+                          <Mail className="w-8 h-8 text-background" />
+                        </div>
                       </motion.div>
-                      <h3 className="text-xl font-semibold text-foreground mb-3">
-                        Check Your Email! 📧
+                      <h3 className="text-xl font-heading font-bold text-foreground mb-3">
+                        Verify Your Email
                       </h3>
-                      <p className="text-muted-foreground mb-4 leading-relaxed">
-                        We've sent a confirmation email to <strong className="text-foreground">{email}</strong>
+                      <p className="text-muted-foreground mb-1 leading-relaxed">
+                        We've sent a verification link to
                       </p>
-                      <p className="text-sm text-muted-foreground mb-6">
-                        Click the confirmation link in your email to activate your account. You must verify your email before you can log in.
+                      <p className="text-foreground font-semibold mb-4 break-words">
+                        {email}
+                      </p>
+                      <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
+                        Click the link in your email to activate your account.
                       </p>
                       
                       {resendSuccess && (
                         <motion.div
                           initial={{ opacity: 0, scale: 0.9 }}
                           animate={{ opacity: 1, scale: 1 }}
-                          className="bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-3 mb-4"
+                          className="bg-foreground/10 border border-foreground/20 rounded-xl p-3 mb-4"
                         >
-                          <CheckCircle className="w-5 h-5 text-emerald-400 mx-auto mb-2" />
-                          <p className="text-emerald-400 text-sm">Confirmation email sent successfully!</p>
+                          <CheckCircle className="w-5 h-5 text-foreground mx-auto mb-2" />
+                          <p className="text-foreground text-sm font-medium">Email sent successfully!</p>
                         </motion.div>
                       )}
                       
-                      <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                      <div className="flex flex-col gap-2">
                         <Button
-                          variant="outline"
-                          onClick={() => setShowConfirmation(false)}
-                          className="h-12 px-6 rounded-xl"
+                          onClick={() => navigate('/login')}
+                          className="w-full h-12 rounded-xl bg-foreground hover:bg-foreground/90 text-background"
                         >
-                          <ArrowLeft className="w-4 h-4 mr-2" />
-                          Back to Form
+                          <LogIn className="w-4 h-4 mr-2" />
+                          Go to Login
                         </Button>
                         <Button
                           onClick={handleResendConfirmation}
                           disabled={isResendingEmail}
-                          className="h-12 px-6 rounded-xl bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700"
+                          variant="outline"
+                          className="w-full h-12 rounded-xl border-foreground/20 hover:bg-foreground/5"
                         >
                           {isResendingEmail ? (
                             <>
                               <motion.div
                                 animate={{ rotate: 360 }}
                                 transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                                className="w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2"
+                                className="w-4 h-4 border-2 border-foreground border-t-transparent rounded-full mr-2"
                               />
                               Sending...
                             </>
@@ -509,13 +510,6 @@ const Signup = () => {
                               Resend Email
                             </>
                           )}
-                        </Button>
-                        <Button
-                          onClick={() => navigate('/login')}
-                          className="h-12 px-6 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-                        >
-                          <LogIn className="w-4 h-4 mr-2" />
-                          Go to Login
                         </Button>
                       </div>
                     </motion.div>
@@ -543,39 +537,7 @@ const Signup = () => {
               </motion.div>
             </div>
 
-            {/* Authentication Status Notice - Full Width */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.9 }}
-              className="absolute bottom-8 left-1/2 -translate-x-1/2 w-full max-w-md mx-auto px-4"
-            >
-              <div className="p-4 bg-gradient-to-r from-emerald-500/10 to-blue-500/10 border border-emerald-500/20 rounded-2xl text-center backdrop-blur-sm">
-                <div className="flex items-center justify-center gap-3 mb-2">
-                  {supabaseStatus === 'checking' ? (
-                    <motion.div
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                    >
-                      <Shield className="w-5 h-5 text-emerald-400" />
-                    </motion.div>
-                  ) : supabaseStatus === 'connected' ? (
-                    <CheckCircle className="w-5 h-5 text-emerald-400" />
-                  ) : (
-                    <AlertCircle className="w-5 h-5 text-amber-400" />
-                  )}
-                  <p className="text-sm font-medium">
-                    {supabaseStatus === 'checking' && <span className="text-emerald-400">Checking connection...</span>}
-                    {supabaseStatus === 'connected' && <span className="text-emerald-400">Supabase Authentication Active</span>}
-                    {supabaseStatus === 'disconnected' && <span className="text-amber-400">Demo Mode Active</span>}
-                  </p>
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  {supabaseStatus === 'connected' && 'Your account will be securely stored in the cloud'}
-                  {supabaseStatus === 'disconnected' && 'Using local storage for demonstration'}
-                </p>
-              </div>
-            </motion.div>
+
           </div>
         </div>
       </main>
