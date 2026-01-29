@@ -159,8 +159,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (response.success && response.user) {
         // Check if email confirmation is required
         if (response.requiresConfirmation) {
-          // Show confirmation message but don't set user yet
-          setShowConfirmation(true);
+          // Email confirmation required - don't set user yet
+          // The signup page will handle showing the confirmation message
           return true; // Return true to indicate successful signup (even if confirmation needed)
         } else {
           // Email confirmation disabled, user is immediately active
