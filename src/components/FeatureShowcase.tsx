@@ -8,12 +8,8 @@ import {
   BookOpen, 
   Code2, 
   Search,
-  TrendingUp,
   CheckCircle2,
-  ArrowRight,
-  Brain,
-  Layers,
-  BarChart3
+  ArrowRight
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -201,27 +197,6 @@ const FeatureCard = ({ feature, index }: { feature: typeof features[0]; index: n
   );
 };
 
-const StatCard = ({ icon: Icon, value, label, delay }: { icon: any; value: string; label: string; delay: number }) => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true });
-
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
-      transition={{ duration: 0.5, delay }}
-      className="relative group"
-    >
-      <div className="p-6 bg-card/50 backdrop-blur-sm border border-border rounded-xl hover:border-foreground/30 transition-all duration-300">
-        <Icon className="w-8 h-8 text-foreground mb-4 group-hover:scale-110 transition-transform" />
-        <div className="text-3xl font-heading font-bold text-foreground mb-2">{value}</div>
-        <div className="text-sm text-muted-foreground">{label}</div>
-      </div>
-    </motion.div>
-  );
-};
-
 export function FeatureShowcase() {
   const titleRef = useRef(null);
   const isTitleInView = useInView(titleRef, { once: true });
@@ -232,58 +207,6 @@ export function FeatureShowcase() {
       <div className="absolute inset-0 bg-gradient-to-b from-background via-background/50 to-background pointer-events-none" />
       
       <div className="container mx-auto px-4 relative z-10">
-        {/* Section Header */}
-        <motion.div
-          ref={titleRef}
-          initial={{ opacity: 0, y: 30 }}
-          animate={isTitleInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-20"
-        >
-          <motion.span 
-            className="text-muted-foreground text-sm font-medium tracking-widest uppercase mb-4 block"
-            initial={{ opacity: 0 }}
-            animate={isTitleInView ? { opacity: 1 } : { opacity: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            Comprehensive Platform
-          </motion.span>
-          
-          <motion.h2 
-            className="text-4xl md:text-5xl font-heading font-bold mb-6"
-            initial={{ opacity: 0, y: 20 }}
-            animate={isTitleInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-          >
-            Powerful Features for <span className="text-foreground">Every Need</span>
-          </motion.h2>
-          
-          <motion.div 
-            className="h-px w-48 mx-auto mb-6 bg-gradient-to-r from-transparent via-foreground/30 to-transparent"
-            initial={{ scaleX: 0 }}
-            animate={isTitleInView ? { scaleX: 1 } : { scaleX: 0 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-          />
-          
-          <motion.p 
-            className="text-lg text-muted-foreground max-w-3xl mx-auto"
-            initial={{ opacity: 0 }}
-            animate={isTitleInView ? { opacity: 1 } : { opacity: 0 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-          >
-            From learning to mastery, our platform provides everything you need to become 
-            a prompt engineering expert with cutting-edge AI-powered tools.
-          </motion.p>
-        </motion.div>
-
-        {/* Stats Section */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-20 max-w-5xl mx-auto">
-          <StatCard icon={Brain} value="AI-Powered" label="Real-time Evaluation" delay={0.2} />
-          <StatCard icon={Layers} value="1000+" label="Expert Prompts" delay={0.3} />
-          <StatCard icon={BookOpen} value="100+" label="Learning Resources" delay={0.4} />
-          <StatCard icon={BarChart3} value="Advanced" label="Analytics Tools" delay={0.5} />
-        </div>
-
         {/* Features Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
           {features.map((feature, index) => (
