@@ -1,5 +1,8 @@
 import { qdrantService, type PromptPayload, type SearchFilters, type SearchOptions } from '../qdrant';
 
+// Get backend URL from environment variable or fallback to localhost
+const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+
 export interface SearchPromptsRequest {
   query?: string;
   category?: string;
@@ -22,7 +25,7 @@ export interface SearchPromptsResponse {
 export async function searchPrompts(params: SearchPromptsRequest): Promise<SearchPromptsResponse> {
   try {
     // Use backend proxy server
-    const response = await fetch('http://localhost:3001/api/prompts/search', {
+    const response = await fetch(`${API_BASE_URL}/api/prompts/search`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -47,7 +50,7 @@ export async function searchPrompts(params: SearchPromptsRequest): Promise<Searc
 export async function getFeaturedPrompts(limit: number = 10): Promise<PromptPayload[]> {
   try {
     // Use backend proxy server
-    const response = await fetch(`http://localhost:3001/api/prompts/featured?limit=${limit}`);
+    const response = await fetch(`${API_BASE_URL}/api/prompts/featured?limit=${limit}`);
 
     if (!response.ok) {
       throw new Error(`Featured prompts failed: ${response.statusText}`);
@@ -66,7 +69,7 @@ export async function getFeaturedPrompts(limit: number = 10): Promise<PromptPayl
 export async function getSimilarPrompts(promptId: string, limit: number = 5): Promise<PromptPayload[]> {
   try {
     // Use backend proxy server
-    const response = await fetch(`http://localhost:3001/api/prompts/${promptId}/similar?limit=${limit}`);
+    const response = await fetch(`${API_BASE_URL}/api/prompts/${promptId}/similar?limit=${limit}`);
 
     if (!response.ok) {
       throw new Error(`Similar prompts failed: ${response.statusText}`);
@@ -226,7 +229,7 @@ function getMockPrompts(): PromptPayload[] {
 export async function updatePromptStats(promptId: string, action: 'star' | 'use' | 'copy'): Promise<void> {
   try {
     // Use backend proxy server
-    await fetch(`http://localhost:3001/api/prompts/${promptId}/stats`, {
+    await fetch(`${API_BASE_URL}/api/prompts/${promptId}/stats`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
