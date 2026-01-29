@@ -42,16 +42,16 @@ export function Footer() {
           {/* Brand */}
           <div className="col-span-2">
             <Link to="/" className="flex items-center gap-2.5 text-xl font-heading font-semibold mb-4">
-              <img 
-                src="/logo.png" 
-                alt="Promptee" 
+              <img
+                src="/logo.png"
+                alt="Promptea"
                 className="w-6 h-6"
                 style={{ filter: 'invert(1) brightness(2)' }}
               />
-              <span className="text-foreground">Promptee</span>
+              <span className="text-foreground">Promptea</span>
             </Link>
             <p className="text-muted-foreground text-sm mb-6 max-w-xs leading-relaxed">
-              Master the art of AI communication with expertly crafted 
+              Master the art of AI communication with expertly crafted
               learning paths and hands-on practice.
             </p>
             {/* Social Links */}
@@ -94,7 +94,7 @@ export function Footer() {
 
         {/* Bottom Bar */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
-          <p>© 2025 Promptee. All rights reserved.</p>
+          <p>© 2025 Promptea. All rights reserved.</p>
           <p>
             Crafted with <span className="text-foreground">excellence</span> for the discerning learner
           </p>

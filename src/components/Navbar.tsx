@@ -31,17 +31,17 @@ export function Navbar() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link 
-            to="/" 
+          <Link
+            to="/"
             className="flex items-center gap-2.5 text-xl font-heading font-semibold transition-all duration-300 hover:opacity-80"
           >
-            <img 
-              src="/logo.png" 
-              alt="Promptee" 
+            <img
+              src="/logo.png"
+              alt="Promptea"
               className="w-8 h-8"
               style={{ filter: 'invert(1) brightness(2)' }}
             />
-            <span className="text-foreground">Promptee</span>
+            <span className="text-foreground">Promptea</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -153,7 +153,7 @@ export function Navbar() {
                 {link.name}
               </Link>
             ))}
-            
+
             {/* Mobile Auth Section */}
             <div className="pt-4 px-4 border-t border-border/30 mt-2">
               {isAuthenticated ? (
