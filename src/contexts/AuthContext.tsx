@@ -69,6 +69,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
         console.log('Auth state change:', event, session?.user?.id);
         
+        // Always set loading to false when auth state changes
+        setLoading(false);
+        
         if (event === 'SIGNED_IN' && session?.user) {
           // User confirmed email or signed in
           const userData: AuthUser = {

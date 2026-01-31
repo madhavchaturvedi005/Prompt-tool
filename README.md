@@ -10,17 +10,33 @@ A comprehensive platform for learning, practicing, and mastering prompt engineer
 - Progress tracking and scoring system
 - Difficulty levels from beginner to advanced
 
-### 🏟️ Practice Arena
-- Real-time prompt evaluation
-- 18 comprehensive evaluation criteria
-- Intelligent criteria selection based on prompt type
-- Detailed feedback with strengths and improvement suggestions
+### 🏟️ Dynamic Practice Arena
+- **AI-Generated Challenges**: Unique challenges created on-demand by GPT-4
+- **Three-Stage Evaluation System**:
+  - Generator LLM creates diverse challenges
+  - Worker LLM executes your prompt
+  - Judge LLM provides detailed grading
+- **5-Minute Timed Sessions**: Test your skills under pressure
+- **Three Difficulty Levels**: Easy, Medium, Hard
+- **Five Categories**: Coding, Creative Writing, Data Extraction, Chatbot Persona, Logical Reasoning
+- **Detailed Feedback**: Score breakdown with specific improvement suggestions
+- **Constraint-Based Challenges**: Learn to work within specific rules and limitations
 
-### 📚 Prompt Library
-- Curated collection of high-quality prompts
-- Advanced search and filtering
-- Save prompts to personal collections
-- Category-based organization
+### 🎨 Prompt Refinery
+- **Template-Based Optimization**: Four specialized modes
+  - **Primer**: Quick, concise prompts (50-150 words)
+  - **Mastermind**: Professional, structured prompts (200-400 words)
+  - **AI Amplifier**: Extremely detailed prompts (400-600 words)
+  - **JSON Mode**: Structured JSON output with schemas
+- **AI-Powered Enhancement**: Transform simple ideas into expert-level prompts
+- **Real-Time Generation**: Instant prompt optimization
+
+### 📚 Prompt Library (1000+ Prompts)
+- **Semantic Search**: AI-powered similarity search using Qdrant
+- **Featured Prompts**: Curated collection of high-quality prompts
+- **Category Filtering**: Coding, Writing, Business, Creative, Analysis, Education
+- **Save & Organize**: Personal collections and favorites
+- **Usage Tracking**: See what's popular in the community
 
 ### 🏆 Gamification System
 - Points and achievements system
@@ -37,11 +53,15 @@ A comprehensive platform for learning, practicing, and mastering prompt engineer
 ## 🛠️ Technologies
 
 - **Frontend**: React, TypeScript, Tailwind CSS, Framer Motion
-- **Backend**: Node.js, Express, PostgreSQL
-- **AI Integration**: OpenAI GPT-4 for evaluations
-- **Vector Database**: Qdrant for prompt similarity search
-- **Authentication**: JWT-based with bcrypt password hashing
+- **Backend**: Node.js, Express
+- **Database**: PostgreSQL (Supabase or Local)
+- **Vector Database**: Qdrant for semantic search
+- **AI Integration**: 
+  - OpenAI GPT-4o for evaluations and generation
+  - Three-stage LLM system (Generator, Worker, Judge)
+- **Authentication**: Supabase Auth with JWT
 - **UI Components**: shadcn/ui with Radix UI primitives
+- **State Management**: React Context + TanStack Query
 
 ## 📦 Installation
 
@@ -164,29 +184,19 @@ The app automatically uses mock data when no database is configured.
 ### Environment Variables
 
 ```env
-# Supabase Database (Recommended - Always Available)
-DB_HOST=db.your-project-ref.supabase.co
-DB_PORT=5432
-DB_NAME=postgres
-DB_USER=postgres
-DB_PASSWORD=your_supabase_password
-
-# OR Local Database (Only works when system is on)
-# DB_HOST=localhost
-# DB_PORT=5432
-# DB_NAME=promptlab
-# DB_USER=postgres
-# DB_PASSWORD=your_password
-
-# OpenAI API (Required for evaluations)
+# OpenAI API (Required for all AI features)
 VITE_OPENAI_API_KEY=your_openai_api_key
+
+# Supabase (Recommended - Always Available)
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 
 # Qdrant Vector Database (Required for prompt library)
 VITE_QDRANT_URL=your_qdrant_url
 VITE_QDRANT_API_KEY=your_qdrant_api_key
 
-# Authentication (Optional)
-JWT_SECRET=your_jwt_secret
+# Optional: Qdrant Backend (for advanced features)
+VITE_QDRANT_BACKEND_URL=http://localhost:3001
 ```
 
 ### Development vs Production
@@ -205,16 +215,22 @@ JWT_SECRET=your_jwt_secret
 
 ### For Learners
 1. **Register an account** to track progress
-2. **Take challenges** to practice prompt engineering
-3. **Use the Practice Arena** for real-time feedback
-4. **Browse the Library** for inspiration and learning
-5. **Track your progress** on the dashboard
+2. **Practice Arena**: Generate unique challenges and test your skills
+   - Select difficulty level (Easy/Medium/Hard)
+   - Write prompts within 5-minute time limit
+   - Get instant AI-powered feedback
+3. **Refine Prompts**: Use the Prompt Refinery to optimize your prompts
+   - Choose from 4 specialized templates
+   - Transform simple ideas into expert prompts
+4. **Weekly Challenges**: Complete structured challenges for points
+5. **Browse Library**: Explore 1000+ curated prompts with semantic search
+6. **Track Progress**: Monitor your improvement on the dashboard
 
 ### For Educators
 1. **Monitor student progress** through the dashboard
-2. **Create custom challenges** (coming soon)
-3. **Use analytics** to identify learning gaps
-4. **Leverage the community** for peer learning
+2. **Use Practice Arena** for hands-on learning exercises
+3. **Leverage analytics** to identify learning gaps
+4. **Share prompts** from the library for teaching examples
 
 ## 🏗️ Architecture
 
@@ -223,19 +239,38 @@ JWT_SECRET=your_jwt_secret
 src/
 ├── components/     # Reusable UI components
 ├── pages/         # Main application pages
+│   ├── PracticeNew.tsx      # Dynamic practice arena
+│   ├── Refine.tsx           # Prompt optimization
+│   ├── LibraryQdrant.tsx    # Semantic search library
+│   └── Challenges.tsx       # Weekly challenges
 ├── lib/           # Utilities and services
+│   ├── practiceGenerator.ts # Three-stage LLM system
+│   ├── qdrant.ts            # Vector search integration
+│   └── supabase.ts          # Database client
 ├── hooks/         # Custom React hooks
 ├── contexts/      # React context providers
 └── types/         # TypeScript type definitions
 ```
 
+### Three-Stage Practice System
+1. **Generator LLM** (Temperature: 0.9)
+   - Creates unique challenges based on difficulty
+   - Returns JSON with task, constraints, and test input
+
+2. **Worker LLM** (Temperature: 0.7)
+   - Executes user's prompt with hidden test input
+   - Returns AI response for evaluation
+
+3. **Judge LLM** (Temperature: 0)
+   - Grades output against constraints
+   - Returns score (0-100), feedback, and pass/fail
+
 ### Database Schema
-- **Users & Authentication**: User accounts, sessions, profiles
+- **Users & Authentication**: User accounts via Supabase Auth
 - **Points & Achievements**: Gamification system
-- **Challenges**: Challenge definitions and submissions
-- **Practice**: Arena sessions and evaluations
-- **Library**: Saved prompts and collections
-- **Social**: User interactions and activity feeds
+- **Challenges**: Challenge submissions and scores
+- **Saved Prompts**: User's personal prompt collections
+- **Activity Tracking**: Usage analytics and progress
 
 ## 🧪 Testing
 
@@ -277,19 +312,27 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 🆘 Support
 
-- **Documentation**: Check the docs folder for detailed guides
-- **Database Issues**: See [DATABASE_SETUP.md](./DATABASE_SETUP.md)
-- **API Issues**: Verify your OpenAI and Qdrant API keys
+- **Documentation**: 
+  - [PRACTICE_SYSTEM.md](./PRACTICE_SYSTEM.md) - Dynamic practice arena details
+  - [SUPABASE_SETUP.md](./SUPABASE_SETUP.md) - Database setup guide
+  - [QDRANT_SETUP.md](./QDRANT_SETUP.md) - Vector database setup
+- **API Issues**: Verify your OpenAI and Qdrant API keys in `.env`
+- **Practice Arena**: See [PRACTICE_SYSTEM.md](./PRACTICE_SYSTEM.md) for architecture details
 - **General Help**: Open an issue on GitHub
 
 ## 🔮 Roadmap
 
-- [ ] Advanced challenge creation tools
-- [ ] Team collaboration features
+- [x] Dynamic challenge generation with AI
+- [x] Multi-template prompt optimization
+- [x] Semantic search with Qdrant
+- [x] Three-stage evaluation system
+- [ ] Challenge history and analytics
+- [ ] Multiplayer practice mode
+- [ ] Custom challenge creation
 - [ ] Mobile application
-- [ ] Integration with more AI models
-- [ ] Advanced analytics and reporting
-- [ ] Marketplace for custom prompts
+- [ ] Integration with more AI models (Claude, Gemini)
+- [ ] Advanced analytics dashboard
+- [ ] Prompt marketplace
 
 ---
 

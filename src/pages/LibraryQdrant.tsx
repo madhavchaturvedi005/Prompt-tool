@@ -518,7 +518,7 @@ const LibraryQdrant = () => {
               whileHover={{ scale: 1.05 }}
             >
               <BookOpen className="w-5 h-5 text-foreground mx-auto mb-2" />
-              <p className="text-xl font-heading font-bold text-foreground">{total || '...'}</p>
+              <p className="text-xl font-heading font-bold text-foreground">1000+</p>
               <p className="text-xs text-muted-foreground">Prompts</p>
             </motion.div>
             <motion.div 

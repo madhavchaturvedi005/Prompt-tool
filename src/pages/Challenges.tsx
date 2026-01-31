@@ -6,11 +6,12 @@ import { Button } from "@/components/ui/button";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 import { challenges as challengesFromSchema } from "@/lib/challengesData";
 import { evaluatePrompt } from "@/lib/challengeEvaluator";
 import { useAuth } from "@/contexts/AuthContext";
+import { SupabaseService, isSupabaseConfigured, supabase, supabaseAdmin } from "@/lib/supabase";
 
 interface Challenge {
   id: number;
@@ -120,7 +121,7 @@ function ChallengeWorkspace({
 }: { 
   challenge: Challenge;
   onBack: () => void;
-  onComplete: (id: number, score: number, criteriaScores: Record<string, number>) => void;
+  onComplete: (id: number, score: number, criteriaScores: Record<string, number>, promptText: string) => void;
 }) {
   const [prompt, setPrompt] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -159,7 +160,7 @@ function ChallengeWorkspace({
 
   const handleComplete = () => {
     if (feedback) {
-      onComplete(challenge.id, feedback.overallScore, feedback.criteriaScores);
+      onComplete(challenge.id, feedback.overallScore, feedback.criteriaScores, prompt);
     }
   };
 
@@ -675,20 +676,116 @@ function ChallengesListView({
 }
 
 const Challenges = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const [challenges, setChallenges] = useState(challengesData);
   const [activeChallenge, setActiveChallenge] = useState<Challenge | null>(null);
+  const [totalPoints, setTotalPoints] = useState(0);
+  const [completedChallenges, setCompletedChallenges] = useState(0);
   
-  // Calculate stats from actual challenge data
-  const completedChallenges = challenges.filter(c => c.status === "completed").length;
-  const totalPoints = challenges
-    .filter(c => c.status === "completed" && c.score)
-    .reduce((sum, c) => sum + Math.floor(c.points * (c.score || 0) / 100), 0);
+  // Fetch actual stats from Supabase
+  useEffect(() => {
+    const fetchStats = async () => {
+      if (!user) return;
+      
+      try {
+        const client = supabaseAdmin || supabase;
+        if (!client) return;
 
-  const handleCompleteChallenge = (id: number, score: number, criteriaScores: Record<string, number>) => {
+        // Get total points
+        const { data: pointsData } = await client
+          .from('point_transactions')
+          .select('points')
+          .eq('user_id', user.id);
+
+        const points = pointsData?.reduce((sum, t) => sum + t.points, 0) || 0;
+        setTotalPoints(points);
+
+        // Get completed challenges count
+        const { data: challengeData } = await client
+          .from('point_transactions')
+          .select('title')
+          .eq('user_id', user.id)
+          .eq('source_type', 'challenge');
+
+        setCompletedChallenges(challengeData?.length || 0);
+      } catch (error) {
+        console.error('Error fetching challenge stats:', error);
+      }
+    };
+
+    if (user) {
+      fetchStats();
+    }
+  }, [user]);
+
+  const handleCompleteChallenge = async (id: number, score: number, criteriaScores: Record<string, number>, promptText: string) => {
+    const challenge = challenges.find(c => c.id === id);
+    if (!challenge || !user) {
+      console.error('Challenge or user not found', { challenge, user });
+      return;
+    }
+
+    // Calculate earned points based on score
+    const earnedPoints = Math.floor(challenge.points * score / 100);
+
+    console.log('Starting challenge completion sync:', {
+      challengeId: id,
+      challengeTitle: challenge.title,
+      score,
+      earnedPoints,
+      userId: user.id,
+      supabaseConfigured: isSupabaseConfigured()
+    });
+
+    // Update local state first for immediate UI feedback
     setChallenges(prev => prev.map(c => 
       c.id === id ? { ...c, status: "completed" as const, score, criteriaScores } : c
     ));
+
+    // Sync with Supabase database
+    if (!isSupabaseConfigured()) {
+      console.warn('Supabase not configured, skipping database sync');
+      setActiveChallenge(null);
+      return;
+    }
+
+    try {
+      console.log('Attempting to add points to Supabase...');
+      
+      const result = await SupabaseService.addPoints({
+        user_id: user.id,
+        points: earnedPoints,
+        transaction_type: 'earned',
+        source_type: 'challenge',
+        source_id: null,
+        title: `Completed ${challenge.title}`,
+        description: `Scored ${score}/100 on ${challenge.difficulty} challenge`,
+        metadata: {
+          challenge_local_id: id,
+          challenge_title: challenge.title,
+          difficulty: challenge.difficulty,
+          score: score,
+          criteria_scores: criteriaScores,
+          prompt_text: promptText
+        }
+      });
+      
+      console.log('✅ Successfully synced challenge completion to Supabase:', {
+        challengeTitle: challenge.title,
+        earnedPoints,
+        result
+      });
+    } catch (error: any) {
+      console.error('❌ Error syncing challenge completion to Supabase:', {
+        error,
+        errorMessage: error?.message,
+        errorDetails: error?.details,
+        errorHint: error?.hint,
+        errorCode: error?.code
+      });
+      // Even if Supabase sync fails, keep the local state updated
+    }
+
     setActiveChallenge(null);
   };
 

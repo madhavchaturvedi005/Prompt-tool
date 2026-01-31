@@ -5,13 +5,26 @@ import type { Database } from '@/types/supabase';
 // Supabase configuration
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
-const supabaseServiceKey = import.meta.env.SUPABASE_SERVICE_ROLE_KEY || '';
+const supabaseServiceKey = import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY || import.meta.env.SUPABASE_SERVICE_ROLE_KEY || '';
+
+console.log('Supabase Configuration:', {
+  url: supabaseUrl,
+  hasAnonKey: !!supabaseAnonKey,
+  anonKeyLength: supabaseAnonKey.length,
+  anonKeyPrefix: supabaseAnonKey.substring(0, 20),
+  hasServiceKey: !!supabaseServiceKey,
+  serviceKeyLength: supabaseServiceKey.length,
+  serviceKeyPrefix: supabaseServiceKey.substring(0, 20)
+});
 
 // Check if Supabase is properly configured
 export const isSupabaseConfigured = (): boolean => {
-  return !!(supabaseUrl && supabaseAnonKey && 
+  const configured = !!(supabaseUrl && supabaseAnonKey && 
     supabaseUrl.includes('supabase.co') && 
     supabaseAnonKey.startsWith('eyJ'));
+  
+  console.log('isSupabaseConfigured:', configured);
+  return configured;
 };
 
 // Create Supabase client for frontend (uses anon key) - only if configured
@@ -25,6 +38,8 @@ export const supabase = isSupabaseConfigured()
     })
   : null;
 
+console.log('Supabase client created:', !!supabase);
+
 // Create Supabase client for backend operations (uses service role key) - only if configured
 export const supabaseAdmin = isSupabaseConfigured() && supabaseServiceKey
   ? createClient<Database>(supabaseUrl, supabaseServiceKey, {
@@ -34,6 +49,8 @@ export const supabaseAdmin = isSupabaseConfigured() && supabaseServiceKey
       }
     })
   : null;
+
+console.log('Supabase admin client created:', !!supabaseAdmin);
 
 // Supabase service class for database operations
 export class SupabaseService {
@@ -144,30 +161,83 @@ export class SupabaseService {
     points: number;
     transaction_type: string;
     source_type: string;
-    source_id?: string;
+    source_id?: string | null;
     title: string;
     description?: string;
     metadata?: Record<string, any>;
   }) {
-    if (!supabase) throw new Error('Supabase not configured');
+    // Use admin client to bypass RLS since we're using custom auth
+    const client = supabaseAdmin || supabase;
     
-    const { data, error } = await supabase
-      .from('point_transactions')
-      .insert([{
-        ...transaction,
-        metadata: transaction.metadata ? JSON.stringify(transaction.metadata) : null
-      }])
-      .select()
-      .single();
+    if (!client) {
+      console.error('Supabase not configured - cannot add points');
+      throw new Error('Supabase not configured');
+    }
+    
+    console.log('SupabaseService.addPoints called with:', {
+      user_id: transaction.user_id,
+      user_id_type: typeof transaction.user_id,
+      points: transaction.points,
+      transaction_type: transaction.transaction_type,
+      source_type: transaction.source_type,
+      title: transaction.title,
+      usingAdmin: !!supabaseAdmin
+    });
+    
+    // Validate UUID format
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(transaction.user_id)) {
+      const error = `Invalid UUID format for user_id: ${transaction.user_id}`;
+      console.error(error);
+      throw new Error(error);
+    }
+    
+    const insertData = {
+      user_id: transaction.user_id,
+      points: transaction.points,
+      transaction_type: transaction.transaction_type,
+      source_type: transaction.source_type,
+      source_id: transaction.source_id || null,
+      title: transaction.title,
+      description: transaction.description || null,
+      metadata: transaction.metadata || null
+    };
+    
+    console.log('Inserting into point_transactions:', insertData);
+    
+    try {
+      const { data, error } = await client
+        .from('point_transactions')
+        .insert([insertData])
+        .select()
+        .single();
 
-    if (error) throw error;
-    return data;
+      if (error) {
+        console.error('Supabase insert error:', {
+          error,
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          code: error.code
+        });
+        throw error;
+      }
+      
+      console.log('Successfully inserted point transaction:', data);
+      return data;
+    } catch (err: any) {
+      console.error('Insert failed with exception:', err);
+      throw err;
+    }
   }
 
   static async getRecentActivity(userId: string, limit: number = 10) {
-    if (!supabase) throw new Error('Supabase not configured');
+    // Use admin client to bypass RLS
+    const client = supabaseAdmin || supabase;
     
-    const { data, error } = await supabase
+    if (!client) throw new Error('Supabase not configured');
+    
+    const { data, error } = await client
       .from('point_transactions')
       .select('*')
       .eq('user_id', userId)

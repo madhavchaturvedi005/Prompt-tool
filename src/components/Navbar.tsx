@@ -7,12 +7,12 @@ import { useAuth } from "@/contexts/AuthContext";
 
 const navLinks = [
   { name: "Home", path: "/" },
-  { name: "Learn", path: "/learn" },
+  { name: "Refine", path: "/refine" },
   { name: "Practice", path: "/practice" },
   { name: "Library", path: "/library" },
   { name: "Challenges", path: "/challenges" },
-  { name: "Refine", path: "/refine" },
   { name: "DevTools", path: "/devtools" },
+  { name: "Learn", path: "/learn" },
 ];
 
 export function Navbar() {

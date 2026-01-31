@@ -67,16 +67,30 @@ const Dashboard = () => {
   // Load dashboard data when user is available
   useEffect(() => {
     const loadDashboardData = async () => {
-      if (!user) return;
+      if (!user) {
+        console.log('No user, skipping dashboard data load');
+        return;
+      }
       
+      console.log('Loading dashboard data for user:', user.id);
       setDataLoading(true);
+      
+      // Add timeout to prevent infinite loading
+      const timeoutId = setTimeout(() => {
+        console.error('Dashboard data loading timed out');
+        setDataLoading(false);
+      }, 10000);
+      
       try {
         // Load all dashboard data in parallel
+        console.log('Fetching stats, weekly progress, and activity...');
         const [statsData, weeklyData, activityData] = await Promise.all([
           dashboardService.getDashboardStats(user.id),
           dashboardService.getWeeklyProgress(user.id),
           dashboardService.getRecentActivity(user.id, 10)
         ]);
+
+        console.log('Dashboard data loaded:', { statsData, weeklyData, activityData });
 
         setStats(statsData);
         setWeeklyProgress(weeklyData);
@@ -87,8 +101,11 @@ const Dashboard = () => {
           icon: getActivityIconComponent(activity.icon),
         }));
         setRecentActivity(activityWithIcons);
+        
+        clearTimeout(timeoutId);
       } catch (error) {
         console.error('Error loading dashboard data:', error);
+        clearTimeout(timeoutId);
       } finally {
         setDataLoading(false);
       }
@@ -96,6 +113,8 @@ const Dashboard = () => {
 
     if (user && !loading) {
       loadDashboardData();
+    } else {
+      console.log('Waiting for auth...', { user: !!user, loading });
     }
   }, [user, loading]);
 

@@ -1,15 +1,59 @@
 // Dashboard service for real data integration
-import { SupabaseService, isSupabaseConfigured } from './supabase';
+import { SupabaseService, isSupabaseConfigured, supabase, supabaseAdmin } from './supabase';
 import type { DashboardStats, WeeklyProgress, RecentActivity } from '@/types/database';
 
 export class SupabaseDashboardService {
   // Get comprehensive dashboard statistics
   static async getDashboardStats(userId: string): Promise<DashboardStats> {
     try {
-      const stats = await SupabaseService.getDashboardStats(userId);
-      return stats || {
-        totalPoints: 0,
-        completedChallenges: 0,
+      // Get total points from point_transactions
+      const client = supabaseAdmin || supabase;
+      if (!client) {
+        console.warn('Supabase not configured, returning default stats');
+        return {
+          totalPoints: 0,
+          completedChallenges: 0,
+          currentStreak: 0,
+          globalRank: 0,
+          savedPrompts: 0,
+          averageScore: 0,
+          practicesSessions: 0,
+          achievementsEarned: 0
+        };
+      }
+
+      console.log('Fetching dashboard stats for user:', userId);
+
+      // Calculate total points
+      const { data: pointsData, error: pointsError } = await client
+        .from('point_transactions')
+        .select('points')
+        .eq('user_id', userId);
+
+      if (pointsError) {
+        console.error('Error fetching points:', pointsError);
+      }
+
+      const totalPoints = pointsData?.reduce((sum, t) => sum + t.points, 0) || 0;
+      console.log('Total points:', totalPoints);
+
+      // Get challenge completions count (unique challenge titles)
+      const { data: challengeData, error: challengeError } = await client
+        .from('point_transactions')
+        .select('title')
+        .eq('user_id', userId)
+        .eq('source_type', 'challenge');
+
+      if (challengeError) {
+        console.error('Error fetching challenges:', challengeError);
+      }
+
+      const completedChallenges = challengeData?.length || 0;
+      console.log('Completed challenges:', completedChallenges);
+
+      return {
+        totalPoints,
+        completedChallenges,
         currentStreak: 0,
         globalRank: 0,
         savedPrompts: 0,
@@ -35,38 +79,109 @@ export class SupabaseDashboardService {
 
   // Get weekly progress data
   static async getWeeklyProgress(userId: string): Promise<WeeklyProgress[]> {
+    const defaultWeek = [
+      { day: "Mon", value: 0, points: 0, activities: 0 },
+      { day: "Tue", value: 0, points: 0, activities: 0 },
+      { day: "Wed", value: 0, points: 0, activities: 0 },
+      { day: "Thu", value: 0, points: 0, activities: 0 },
+      { day: "Fri", value: 0, points: 0, activities: 0 },
+      { day: "Sat", value: 0, points: 0, activities: 0 },
+      { day: "Sun", value: 0, points: 0, activities: 0 },
+    ];
+
     try {
-      const progress = await SupabaseService.getWeeklyProgress(userId);
-      return progress || [
-        { day: "Mon", value: 0, points: 0, activities: 0 },
-        { day: "Tue", value: 0, points: 0, activities: 0 },
-        { day: "Wed", value: 0, points: 0, activities: 0 },
-        { day: "Thu", value: 0, points: 0, activities: 0 },
-        { day: "Fri", value: 0, points: 0, activities: 0 },
-        { day: "Sat", value: 0, points: 0, activities: 0 },
-        { day: "Sun", value: 0, points: 0, activities: 0 },
-      ];
+      const client = supabaseAdmin || supabase;
+      if (!client) {
+        console.warn('Supabase not configured, returning default week');
+        return defaultWeek;
+      }
+
+      console.log('Fetching weekly progress for user:', userId);
+
+      // Get points from the last 7 days
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+      const { data, error } = await client
+        .from('point_transactions')
+        .select('points, created_at')
+        .eq('user_id', userId)
+        .gte('created_at', sevenDaysAgo.toISOString())
+        .order('created_at', { ascending: true });
+
+      if (error) {
+        console.error('Error fetching weekly progress:', error);
+        return defaultWeek;
+      }
+
+      // Group by day of week
+      const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      const today = new Date().getDay();
+      const weekData: WeeklyProgress[] = [];
+
+      // Initialize all days
+      for (let i = 0; i < 7; i++) {
+        const dayIndex = (today - 6 + i + 7) % 7;
+        weekData.push({
+          day: dayNames[dayIndex],
+          value: 0,
+          points: 0,
+          activities: 0
+        });
+      }
+
+      // Fill in actual data
+      data?.forEach(transaction => {
+        const date = new Date(transaction.created_at);
+        const daysAgo = Math.floor((Date.now() - date.getTime()) / (1000 * 60 * 60 * 24));
+        
+        if (daysAgo < 7) {
+          const index = 6 - daysAgo;
+          if (index >= 0 && index < 7) {
+            weekData[index].points += transaction.points;
+            weekData[index].activities += 1;
+          }
+        }
+      });
+
+      // Calculate value as percentage of max
+      const maxPoints = Math.max(...weekData.map(d => d.points), 1);
+      weekData.forEach(day => {
+        day.value = Math.round((day.points / maxPoints) * 100);
+      });
+
+      console.log('Weekly progress:', weekData);
+      return weekData;
     } catch (error) {
       console.error('Error fetching weekly progress:', error);
-      // Return fallback data
-      return [
-        { day: "Mon", value: 0, points: 0, activities: 0 },
-        { day: "Tue", value: 0, points: 0, activities: 0 },
-        { day: "Wed", value: 0, points: 0, activities: 0 },
-        { day: "Thu", value: 0, points: 0, activities: 0 },
-        { day: "Fri", value: 0, points: 0, activities: 0 },
-        { day: "Sat", value: 0, points: 0, activities: 0 },
-        { day: "Sun", value: 0, points: 0, activities: 0 },
-      ];
+      return defaultWeek;
     }
   }
 
   // Get recent activity feed
   static async getRecentActivity(userId: string, limit: number = 10): Promise<RecentActivity[]> {
     try {
-      const activities = await SupabaseService.getRecentActivity(userId, limit);
+      const client = supabaseAdmin || supabase;
+      if (!client) {
+        console.warn('Supabase not configured, returning empty activity');
+        return [];
+      }
+
+      console.log('Fetching recent activity for user:', userId);
+
+      const { data: activities, error } = await client
+        .from('point_transactions')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false })
+        .limit(limit);
+
+      if (error) {
+        console.error('Error fetching recent activity:', error);
+        return [];
+      }
       
-      return activities.map(activity => ({
+      const result = (activities || []).map(activity => ({
         id: activity.id,
         type: activity.source_type as any,
         title: activity.title,
@@ -75,6 +190,9 @@ export class SupabaseDashboardService {
         icon: getActivityIcon(activity.source_type),
         color: getActivityColor(activity.source_type)
       }));
+
+      console.log('Recent activity:', result);
+      return result;
     } catch (error) {
       console.error('Error fetching recent activity:', error);
       return [];
@@ -87,7 +205,8 @@ export class SupabaseDashboardService {
     source_type: string;
     title: string;
     description?: string;
-    source_id?: string;
+    source_id?: string | null;
+    metadata?: Record<string, any>;
   }): Promise<boolean> {
     try {
       await SupabaseService.addPoints({
@@ -95,9 +214,10 @@ export class SupabaseDashboardService {
         points: activity.points,
         transaction_type: 'earned',
         source_type: activity.source_type,
-        source_id: activity.source_id,
+        source_id: activity.source_id || null,
         title: activity.title,
-        description: activity.description
+        description: activity.description,
+        metadata: activity.metadata
       });
       return true;
     } catch (error) {
@@ -231,5 +351,11 @@ export class MockDashboardService {
 // Export the appropriate service based on environment
 const isDevelopment = import.meta.env.NODE_ENV === 'development';
 const hasSupabase = isSupabaseConfigured();
+
+console.log('Dashboard Service Configuration:', {
+  isDevelopment,
+  hasSupabase,
+  usingService: hasSupabase ? 'SupabaseDashboardService' : 'MockDashboardService'
+});
 
 export const dashboardService = hasSupabase ? SupabaseDashboardService : MockDashboardService;

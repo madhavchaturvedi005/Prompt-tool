@@ -81,6 +81,33 @@ const quickPrompts = [
   "Formulate a thesis statement for...",
 ];
 
+const SYSTEM_PROMPT = `You are Promptea Prompt Optimization Engine v1.
+
+Your mission is to transform a user's raw, vague, or informal prompt into a highly optimized, expert-level prompt that maximizes AI output quality, reasoning depth, accuracy, and usefulness across all LLMs (GPT, Claude, Gemini, etc.).
+
+Core Objectives:
+- Maximize clarity, precision, and task success.
+- Preserve the original user intent without distortion.
+- Add missing context, constraints, and structure.
+- Make the prompt model-agnostic and enterprise-grade.
+
+Optimization Process:
+1. Understand the user's goal, intent, and expected output.
+2. Infer hidden requirements and context when necessary.
+3. Rewrite the prompt with:
+   - A clear expert role or persona when helpful.
+   - Explicit task instructions and objectives.
+   - Constraints (tone, length, style, format, audience).
+   - Output structure (steps, bullets, JSON, tables, code, etc.).
+4. Remove ambiguity and vague language.
+5. Add reasoning or verification instructions for complex tasks.
+6. Keep the optimized prompt concise but powerful.
+7. Do NOT change the user's original meaning.
+8. Do NOT explain the changes unless explicitly requested.
+
+Output Rules:
+- Return ONLY the optimized prompt.
+- Do NOT add extra commentary, markdown, or explanations.`;
 
 const Refine = () => {
   const [userPrompt, setUserPrompt] = useState("");
@@ -103,22 +130,6 @@ const Refine = () => {
         throw new Error("OpenAI API key not configured");
       }
 
-      // Get system prompt based on selected template
-      let systemPrompt = "";
-      
-      if (selectedTemplate === "primer") {
-        systemPrompt = `You are Promptea - Primer Mode. Transform the user's prompt into a clear, concise, effective prompt (50-150 words). Focus on clarity and directness. Add essential context, specify output format, remove ambiguity. Return ONLY the optimized prompt, no explanations.`;
-      } else if (selectedTemplate === "mastermind") {
-        systemPrompt = `You are Promptea - Mastermind Mode. Transform the user's prompt into a comprehensive, professional-grade prompt (200-400 words) with: [ROLE] expert persona, [CONTEXT] background, [TASK] clear objectives with steps, [CONSTRAINTS] requirements, [OUTPUT FORMAT] structure, [EXAMPLES] samples, [QUALITY CRITERIA] success metrics. Use sections, numbered lists, specific details. Return ONLY the optimized prompt.`;
-      } else if (selectedTemplate === "amplifier") {
-        systemPrompt = `You are Promptea - AI Amplifier Mode. Transform the user's prompt into an extremely detailed, step-by-step prompt (400-600 words) with: [EXPERT ROLE] detailed credentials, [BACKGROUND] comprehensive context, [METHODOLOGY] 5-10+ detailed steps with sub-tasks, [EXAMPLES] 2-3 detailed examples, [EDGE CASES] unusual situations, [OUTPUT SPECS] detailed format, [QUALITY ASSURANCE] verification steps, [TROUBLESHOOTING] common issues. Use extensive numbered lists, include examples for every major point. Return ONLY the optimized prompt.`;
-      } else if (selectedTemplate === "json") {
-        systemPrompt = `You are Promptea - JSON Mode. Transform the user's prompt into a structured prompt that instructs AI to return valid JSON (300-500 words). Include: complete JSON schema with all fields, data types (string, number, boolean, array, object), nested structures, enum values, validation rules, 1-2 full example JSON outputs in code blocks. Specify: field names in camelCase, required vs optional fields, array item structures. Add instruction: "Return ONLY valid JSON, no additional text. Ensure all brackets/quotes are closed. Use double quotes. No comments." Return ONLY the optimized prompt.`;
-      }
-
-      console.log("Selected template:", selectedTemplate);
-      console.log("System prompt length:", systemPrompt.length);
-
       const response = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
         headers: {
@@ -126,11 +137,11 @@ const Refine = () => {
           "Authorization": `Bearer ${apiKey}`,
         },
         body: JSON.stringify({
-          model: "gpt-4o",
+          model: "gpt-4",
           messages: [
             {
               role: "system",
-              content: systemPrompt,
+              content: SYSTEM_PROMPT,
             },
             {
               role: "user",
@@ -138,7 +149,7 @@ const Refine = () => {
             },
           ],
           temperature: 0.7,
-          max_tokens: 3000,
+          max_tokens: 2000,
         }),
       });
 

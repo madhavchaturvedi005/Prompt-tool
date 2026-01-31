@@ -7,7 +7,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import Learn from "./pages/Learn";
-import Practice from "./pages/Practice";
+import PracticeNew from "./pages/PracticeNew";
 import LibraryQdrant from "./pages/LibraryQdrant";
 import Challenges from "./pages/Challenges";
 import Dashboard from "./pages/Dashboard";
@@ -15,6 +15,7 @@ import DevTools from "./pages/DevTools";
 import Refine from "./pages/Refine";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import TestSupabase from "./pages/TestSupabase";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,7 +30,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/learn" element={<Learn />} />
-            <Route path="/practice" element={<Practice />} />
+            <Route path="/practice" element={<PracticeNew />} />
             <Route path="/library" element={<LibraryQdrant />} />
             <Route path="/challenges" element={
               <ProtectedRoute>
@@ -45,6 +46,11 @@ const App = () => (
             <Route path="/refine" element={<Refine />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/test-supabase" element={
+              <ProtectedRoute>
+                <TestSupabase />
+              </ProtectedRoute>
+            } />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
