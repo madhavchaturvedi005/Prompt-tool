@@ -182,15 +182,6 @@ const Refine = () => {
             transition={{ duration: 0.6 }}
             className="text-center max-w-4xl mx-auto"
           >
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.2, type: "spring", bounce: 0.5 }}
-              className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-foreground/10 mb-6"
-            >
-              <Wand2 className="w-8 h-8 text-foreground" />
-            </motion.div>
-
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold mb-4 leading-tight">
               Refine Your Prompts
             </h1>

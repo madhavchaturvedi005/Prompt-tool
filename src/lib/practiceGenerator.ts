@@ -16,6 +16,8 @@ export interface GradingResult {
   feedback: string;
   passed: boolean;
   workerOutput?: string;
+  improvements?: string[];
+  strengths?: string[];
 }
 
 const CATEGORIES = ['Coding', 'Creative Writing', 'Data Extraction', 'Chatbot Persona', 'Logical Reasoning'];
@@ -57,7 +59,7 @@ You will receive:
 - The Constraints: Rules that must be followed
 - The Result: The actual output from running the student's prompt
 
-Your Task: Grade this out of 100.
+Your Task: Grade this out of 100 and provide detailed, actionable feedback.
 
 Grading Rules:
 - Deduct 20 points for EVERY constraint violated
@@ -68,9 +70,17 @@ Grading Rules:
 Return ONLY valid JSON (NO markdown, NO code blocks, JUST the JSON):
 {
   "score": number (0-100),
-  "feedback": "brief critique explaining the score",
-  "passed": boolean (true if score >= 70)
+  "feedback": "A brief 1-2 sentence overall assessment",
+  "passed": boolean (true if score >= 70),
+  "strengths": ["What the prompt did well", "Another strength"],
+  "improvements": ["Specific actionable suggestion 1", "Specific actionable suggestion 2", "Specific actionable suggestion 3"]
 }
+
+Guidelines for improvements:
+- Be specific and actionable (e.g., "Add explicit instruction to limit response to 50 words" not "Be more concise")
+- Focus on constraint violations first
+- Suggest prompt engineering techniques (e.g., "Use role-playing: 'You are a...'", "Add output format specification", "Include examples")
+- If score is perfect, still suggest 1-2 advanced techniques to try
 
 CRITICAL: Return ONLY the raw JSON object. Do NOT wrap it in markdown code blocks. Do NOT add any explanatory text.`;
 

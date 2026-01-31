@@ -4,26 +4,20 @@ import { Sparkles, Github, Twitter, Linkedin, Mail } from "lucide-react";
 const footerLinks = {
   Platform: [
     { name: "Learn", path: "/learn" },
-    { name: "Practice", path: "/practice" },
+    { name: "Practice Arena", path: "/practice" },
     { name: "Challenges", path: "/challenges" },
-    { name: "Library", path: "/library" },
+    { name: "Prompt Library", path: "/library" },
+    { name: "Prompt Refinery", path: "/refine" },
   ],
-  Resources: [
-    { name: "Documentation", path: "/docs" },
-    { name: "Blog", path: "/blog" },
-    { name: "Tutorials", path: "/tutorials" },
-    { name: "API", path: "/api" },
-  ],
-  Company: [
-    { name: "DevTools", path: "/devtools" },
-    { name: "Careers", path: "/careers" },
-    { name: "Contact", path: "/contact" },
-    { name: "Press", path: "/press" },
+  Tools: [
+    { name: "Dashboard", path: "/dashboard" },
+    { name: "Dev Tools", path: "/devtools" },
   ],
   Legal: [
-    { name: "Privacy", path: "/privacy" },
-    { name: "Terms", path: "/terms" },
-    { name: "Cookies", path: "/cookies" },
+    { name: "Privacy Policy", path: "/privacy" },
+    { name: "Terms of Service", path: "/terms" },
+    { name: "Cookie Policy", path: "/cookies" },
+    { name: "Refund Policy", path: "/refund" },
   ],
 };
 
@@ -38,9 +32,9 @@ export function Footer() {
   return (
     <footer className="relative pt-24 pb-12 border-t border-border bg-card/30">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-8 mb-12">
           {/* Brand */}
-          <div className="col-span-2">
+          <div className="col-span-1 md:col-span-2">
             <Link to="/" className="flex items-center gap-2.5 text-xl font-heading font-semibold mb-4">
               <img
                 src="/logo.png"

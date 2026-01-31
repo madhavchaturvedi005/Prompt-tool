@@ -16,6 +16,10 @@ import Refine from "./pages/Refine";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import TestSupabase from "./pages/TestSupabase";
+import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
+import Cookies from "./pages/Cookies";
+import Refund from "./pages/Refund";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -51,6 +55,10 @@ const App = () => (
                 <TestSupabase />
               </ProtectedRoute>
             } />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/cookies" element={<Cookies />} />
+            <Route path="/refund" element={<Refund />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

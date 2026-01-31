@@ -13,7 +13,8 @@ import {
   Trophy,
   RotateCcw,
   Loader2,
-  AlertCircle
+  AlertCircle,
+  CheckCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
@@ -144,7 +145,14 @@ const PracticeNew = () => {
         score: 0,
         feedback: "No prompt submitted. You must write a prompt to receive a score.",
         passed: false,
-        workerOutput: "No output - prompt was empty"
+        workerOutput: "No output - prompt was empty",
+        improvements: [
+          "Write a clear system prompt that defines the AI's role and task",
+          "Include specific instructions about what the AI should do",
+          "Add constraints or formatting requirements to guide the output",
+          "Consider using examples to clarify your expectations"
+        ],
+        strengths: []
       });
       return;
     }
@@ -216,15 +224,6 @@ const PracticeNew = () => {
             transition={{ duration: 0.6 }}
             className="text-center max-w-4xl mx-auto"
           >
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.2, type: "spring", bounce: 0.5 }}
-              className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-foreground/10 mb-6"
-            >
-              <Brain className="w-8 h-8 text-foreground" />
-            </motion.div>
-
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold mb-4 leading-tight">
               Practice Arena
             </h1>
@@ -463,6 +462,51 @@ Think about:
                     {result.feedback}
                   </p>
                 </div>
+
+                {/* Strengths & Improvements */}
+                {((result.strengths && result.strengths.length > 0) || (result.improvements && result.improvements.length > 0)) && (
+                  <div className={`grid gap-6 ${
+                    result.strengths && result.strengths.length > 0 && result.improvements && result.improvements.length > 0
+                      ? 'md:grid-cols-2'
+                      : 'md:grid-cols-1 max-w-2xl mx-auto'
+                  }`}>
+                    {/* Strengths */}
+                    {result.strengths && result.strengths.length > 0 && (
+                      <div className="bg-emerald-500/10 backdrop-blur-sm rounded-2xl border border-emerald-500/30 p-6">
+                        <h3 className="text-lg font-semibold mb-4 flex items-center gap-2 text-emerald-400">
+                          <CheckCircle className="w-5 h-5" />
+                          What You Did Well
+                        </h3>
+                        <ul className="space-y-3">
+                          {result.strengths.map((strength, index) => (
+                            <li key={index} className="text-sm text-muted-foreground flex items-start gap-2">
+                              <span className="text-emerald-400 mt-0.5">✓</span>
+                              <span>{strength}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {/* Improvements */}
+                    {result.improvements && result.improvements.length > 0 && (
+                      <div className="bg-amber-500/10 backdrop-blur-sm rounded-2xl border border-amber-500/30 p-6">
+                        <h3 className="text-lg font-semibold mb-4 flex items-center gap-2 text-amber-400">
+                          <Target className="w-5 h-5" />
+                          How to Improve Your Prompt
+                        </h3>
+                        <ul className="space-y-3">
+                          {result.improvements.map((improvement, index) => (
+                            <li key={index} className="text-sm text-muted-foreground flex items-start gap-2">
+                              <span className="text-amber-400 mt-0.5 font-bold">→</span>
+                              <span>{improvement}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 {/* Challenge Details */}
                 <div className="bg-card/60 backdrop-blur-sm rounded-2xl border border-border/50 p-6">
