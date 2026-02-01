@@ -70,6 +70,35 @@ const promptTemplates = [
 ];
 
 const quickPrompts = [
+  // Writing & Editing
+  "Proofread this text for grammar, tone, and clarity...",
+  "Rewrite this paragraph to be more concise...",
+  "Rewrite this paragraph to be more professional...",
+  "Rewrite this paragraph to be more persuasive...",
+  "Suggest a better word for...",
+  "Draft an email regarding...",
+  "Create a catchy title for...",
+  "Write a counter-argument to...",
+  "Expand on the idea that...",
+  
+  // Learning & Research
+  "Give me a real-world example of...",
+  "Compare and contrast...",
+  "Create a timeline of events for...",
+  "Identify the main themes in...",
+  "Break down the steps to...",
+  "What are the pros and cons of...",
+  "Connect the concept of X to...",
+  
+  // Creativity & Problem Solving
+  "Brainstorm ideas for...",
+  "Propose a strategy to...",
+  "Suggest a solution for...",
+  "Debug this code snippet for...",
+  "List potential risks of...",
+  "Roleplay as a [job title] and tell me...",
+  
+  // Original prompts
   "Explain a concept like I'm 10...",
   "Create a study plan for...",
   "Summarize my notes on...",
@@ -246,8 +275,8 @@ const Refine = () => {
                   <Lightbulb className="w-4 h-4" />
                   Quick Start
                 </h3>
-                <div className="space-y-1.5">
-                  {quickPrompts.slice(0, 6).map((prompt, index) => (
+                <div className="space-y-1.5 max-h-[400px] overflow-y-auto">
+                  {quickPrompts.slice(0, 12).map((prompt, index) => (
                     <button
                       key={index}
                       onClick={() => handleQuickPrompt(prompt)}
@@ -400,17 +429,55 @@ const Refine = () => {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.4 }}
-                  className="grid grid-cols-2 md:grid-cols-3 gap-3"
+                  className="space-y-6"
                 >
-                  {quickPrompts.map((prompt, index) => (
-                    <button
-                      key={index}
-                      onClick={() => handleQuickPrompt(prompt)}
-                      className="p-3 rounded-xl bg-muted/30 border border-border/50 hover:border-foreground/30 hover:bg-muted/50 transition-all text-left text-xs"
-                    >
-                      {prompt}
-                    </button>
-                  ))}
+                  {/* Writing & Editing */}
+                  <div>
+                    <h3 className="text-sm font-semibold mb-3 text-muted-foreground">Writing & Editing</h3>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                      {quickPrompts.slice(0, 9).map((prompt, index) => (
+                        <button
+                          key={index}
+                          onClick={() => handleQuickPrompt(prompt)}
+                          className="p-3 rounded-xl bg-muted/30 border border-border/50 hover:border-foreground/30 hover:bg-muted/50 transition-all text-left text-xs"
+                        >
+                          {prompt}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Learning & Research */}
+                  <div>
+                    <h3 className="text-sm font-semibold mb-3 text-muted-foreground">Learning & Research</h3>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                      {quickPrompts.slice(9, 16).map((prompt, index) => (
+                        <button
+                          key={index + 9}
+                          onClick={() => handleQuickPrompt(prompt)}
+                          className="p-3 rounded-xl bg-muted/30 border border-border/50 hover:border-foreground/30 hover:bg-muted/50 transition-all text-left text-xs"
+                        >
+                          {prompt}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Creativity & Problem Solving */}
+                  <div>
+                    <h3 className="text-sm font-semibold mb-3 text-muted-foreground">Creativity & Problem Solving</h3>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                      {quickPrompts.slice(16, 22).map((prompt, index) => (
+                        <button
+                          key={index + 16}
+                          onClick={() => handleQuickPrompt(prompt)}
+                          className="p-3 rounded-xl bg-muted/30 border border-border/50 hover:border-foreground/30 hover:bg-muted/50 transition-all text-left text-xs"
+                        >
+                          {prompt}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 </motion.div>
               )}
             </motion.div>

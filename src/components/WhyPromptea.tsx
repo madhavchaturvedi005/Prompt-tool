@@ -131,42 +131,6 @@ export function WhyPromptea() {
             <ReasonCard key={reason.title} reason={reason} index={index} />
           ))}
         </div>
-
-        {/* Bottom Stats */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="mt-20 text-center"
-        >
-          <div className="inline-flex flex-col sm:flex-row items-center gap-4 sm:gap-8 p-6 sm:p-8 bg-card border border-border rounded-xl">
-            <div className="text-center">
-              <div className="text-3xl sm:text-4xl font-heading font-bold text-foreground mb-2">
-                10x
-              </div>
-              <div className="text-sm text-muted-foreground">Faster Learning</div>
-            </div>
-            
-            <div className="hidden sm:block w-px h-12 bg-border" />
-            
-            <div className="text-center">
-              <div className="text-3xl sm:text-4xl font-heading font-bold text-foreground mb-2">
-                100%
-              </div>
-              <div className="text-sm text-muted-foreground">Practical Focus</div>
-            </div>
-            
-            <div className="hidden sm:block w-px h-12 bg-border" />
-            
-            <div className="text-center">
-              <div className="text-3xl sm:text-4xl font-heading font-bold text-foreground mb-2">
-                24/7
-              </div>
-              <div className="text-sm text-muted-foreground">AI Feedback</div>
-            </div>
-          </div>
-        </motion.div>
       </div>
     </section>
   );
