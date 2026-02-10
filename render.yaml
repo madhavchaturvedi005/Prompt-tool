@@ -1,0 +1,36 @@
+services:
+  # Service 1: Qdrant Backend (for prompt library)
+  - type: web
+    name: qdrant-backend
+    runtime: node
+    buildCommand: cd qdrant-backend && npm install
+    startCommand: cd qdrant-backend && npm start
+    envVars:
+      - key: QDRANT_URL
+        sync: false
+      - key: QDRANT_API_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3001
+      - key: ALLOWED_ORIGINS
+        value: https://promptea.dev,https://www.promptea.dev,http://localhost:5173
+
+  # Service 2: OpenAI Proxy (for AI features - Refine, Practice Arena)
+  - type: web
+    name: promptea-openai-proxy
+    runtime: node
+    buildCommand: cd server && npm install
+    startCommand: node server/openai-proxy.js
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: NODE_ENV
+        value: production
+      - key: FRONTEND_URL
+        value: https://promptea.dev
+      - key: PORT
+        value: 3002

@@ -1,0 +1,18 @@
+{
+  "name": "promptea-proxy",
+  "version": "1.0.0",
+  "description": "Secure OpenAI API proxy for Promptea",
+  "main": "openai-proxy.js",
+  "scripts": {
+    "start": "node openai-proxy.js",
+    "dev": "node openai-proxy.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
