@@ -86,15 +86,14 @@ CRITICAL: Return ONLY the raw JSON object. Do NOT wrap it in markdown code block
 
 export async function generateChallenge(
   difficulty: 'Easy' | 'Medium' | 'Hard',
-  apiKey: string
+  proxyUrl: string
 ): Promise<GeneratedChallenge> {
   const category = CATEGORIES[Math.floor(Math.random() * CATEGORIES.length)];
 
-  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+  const response = await fetch(`${proxyUrl}/api/chat/completions`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
       model: 'gpt-4o',
@@ -142,13 +141,12 @@ export async function generateChallenge(
 export async function executeUserPrompt(
   userPrompt: string,
   hiddenTestInput: string,
-  apiKey: string
+  proxyUrl: string
 ): Promise<string> {
-  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+  const response = await fetch(`${proxyUrl}/api/chat/completions`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
       model: 'gpt-4o',
@@ -180,7 +178,7 @@ export async function gradeResult(
   constraints: string[],
   successCriteria: string,
   workerOutput: string,
-  apiKey: string
+  proxyUrl: string
 ): Promise<GradingResult> {
   const judgePrompt = `The Goal: ${task}
 
@@ -196,11 +194,10 @@ ${workerOutput}
 
 Grade this output according to the rules.`;
 
-  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+  const response = await fetch(`${proxyUrl}/api/chat/completions`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
       model: 'gpt-4o',

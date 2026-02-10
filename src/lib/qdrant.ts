@@ -144,16 +144,11 @@ class QdrantPromptService {
   // Generate embeddings using OpenAI API
   async generateEmbedding(text: string): Promise<number[]> {
     try {
-      const apiKey = getEnvVar('VITE_OPENAI_API_KEY') || getEnvVar('OPENAI_API_KEY');
-      
-      if (!apiKey) {
-        throw new Error('OpenAI API key not found');
-      }
+      const proxyUrl = getEnvVar('VITE_OPENAI_PROXY_URL') || 'http://localhost:3002';
 
-      const response = await fetch('https://api.openai.com/v1/embeddings', {
+      const response = await fetch(`${proxyUrl}/api/embeddings`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${apiKey}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({

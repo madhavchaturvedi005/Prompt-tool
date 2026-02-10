@@ -76,11 +76,7 @@ function analyzePromptType(prompt: string): { type: string; applicableCriteria: 
 
 export async function evaluatePromptInArena(prompt: string): Promise<ArenaEvaluationResult> {
   try {
-    const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
-    
-    if (!apiKey) {
-      throw new Error('OpenAI API key not found');
-    }
+    const proxyUrl = import.meta.env.VITE_OPENAI_PROXY_URL || 'http://localhost:3002';
 
     // Analyze prompt type and get applicable criteria
     const { type: promptType, applicableCriteria } = analyzePromptType(prompt);
@@ -120,10 +116,9 @@ IMPORTANT: Only evaluate criteria that are relevant to this type of prompt. For 
 
 Be thorough, constructive, and specific in your evaluation.`;
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch(`${proxyUrl}/api/chat/completions`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({

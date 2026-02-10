@@ -118,12 +118,9 @@ const PracticeNew = () => {
     setUserPrompt("");
 
     try {
-      const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
-      if (!apiKey) {
-        throw new Error("OpenAI API key not configured");
-      }
+      const proxyUrl = import.meta.env.VITE_OPENAI_PROXY_URL || 'http://localhost:3002';
 
-      const newChallenge = await generateChallenge(difficulty, apiKey);
+      const newChallenge = await generateChallenge(difficulty, proxyUrl);
       setChallenge(newChallenge);
       setTimeLeft(300); // Reset timer
       setIsActive(true);
@@ -162,16 +159,13 @@ const PracticeNew = () => {
     setError(null);
 
     try {
-      const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
-      if (!apiKey) {
-        throw new Error("OpenAI API key not configured");
-      }
+      const proxyUrl = import.meta.env.VITE_OPENAI_PROXY_URL || 'http://localhost:3002';
 
       // Step 1: Execute user's prompt with hidden test input
       const workerOutput = await executeUserPrompt(
         userPrompt,
         challenge.hidden_test_input,
-        apiKey
+        proxyUrl
       );
 
       // Step 2: Grade the result
@@ -180,7 +174,7 @@ const PracticeNew = () => {
         challenge.constraints,
         challenge.success_criteria,
         workerOutput,
-        apiKey
+        proxyUrl
       );
 
       setResult(gradingResult);

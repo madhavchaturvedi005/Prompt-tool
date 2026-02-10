@@ -126,11 +126,7 @@ const Refine = () => {
     setOptimizedPrompt("");
 
     try {
-      const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
-      
-      if (!apiKey) {
-        throw new Error("OpenAI API key not configured");
-      }
+      const proxyUrl = import.meta.env.VITE_OPENAI_PROXY_URL || 'http://localhost:3002';
 
       // Get system prompt based on selected template
       let systemPrompt = "";
@@ -148,11 +144,10 @@ const Refine = () => {
       console.log("Selected template:", selectedTemplate);
       console.log("System prompt length:", systemPrompt.length);
 
-      const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      const response = await fetch(`${proxyUrl}/api/chat/completions`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${apiKey}`,
         },
         body: JSON.stringify({
           model: "gpt-4o",

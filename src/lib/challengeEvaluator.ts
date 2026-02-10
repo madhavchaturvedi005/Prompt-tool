@@ -17,11 +17,7 @@ export async function evaluatePrompt(
   criteria: EvaluationCriteria[]
 ): Promise<EvaluationResult> {
   try {
-    const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
-    
-    if (!apiKey) {
-      throw new Error('OpenAI API key not found');
-    }
+    const proxyUrl = import.meta.env.VITE_OPENAI_PROXY_URL || 'http://localhost:3002';
 
     const evaluationPrompt = `You are an expert prompt engineering evaluator. Evaluate the following prompt based on the given criteria and provide detailed feedback.
 
@@ -48,10 +44,9 @@ Rate each criterion on a scale of 1-10, where:
 
 Be constructive and specific in your feedback and suggestions.`;
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch(`${proxyUrl}/api/chat/completions`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
